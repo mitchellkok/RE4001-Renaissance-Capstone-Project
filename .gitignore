@@ -1,15 +1,15 @@
-.vscode
+.vscode/
 
 # c build files (except .uf2 for flashing)
-.obj
-.bin
-.dis
-.hex
-.map
-.elf
+*.obj
+*.bin
+*.dis
+*.hex
+*.map
+*.elf
 
 # build folders
-.CMakeFiles
-.elf2uf2
-.generated
-.pico-sdk
+CMakeFiles/
+elf2uf2/
+generated/
+pico-sdk/
