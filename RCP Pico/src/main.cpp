@@ -37,7 +37,6 @@ void setup() {
   //while(!Serial) // Pause the board for as long as the serial monitor is closed
 
   //  INITIALIZE MS8607 
-  bool setSDA();
   if(!ms8607.begin()){
     Serial.println("Failed to find MS8607 chip!");
     // while(true){
