@@ -15,14 +15,12 @@ SoftwareSerial gpsSerial(RXPin, TXPin);
 TinyGPSPlus gps;
 
 void displayNMEAMessage(){
-  if(true)
-  {
+  if(true){
     Serial.print("Number of Satellites Detected: ");
     Serial.println(gps.satellites.value());
     
   }
-  if (gps.location.isValid())
-  {
+  if (gps.location.isValid()){
     Serial.print("Latitude: ");
     Serial.println(gps.location.lat(), 6);
     Serial.print("Longitude: ");
@@ -30,28 +28,23 @@ void displayNMEAMessage(){
     Serial.print("Altitude: ");
     Serial.println(gps.altitude.meters());
   }
-  else
-  {
+  else{
     Serial.println("Location: Not Available");
   }
   
   Serial.print("Date: ");
-  if (gps.date.isValid())
-  {
+  if (gps.date.isValid()){
     Serial.print(gps.date.month());
     Serial.print("/");
     Serial.print(gps.date.day());
     Serial.print("/");
     Serial.println(gps.date.year());
   }
-  else
-  {
+  else{
     Serial.println("Not Available");
   }
-
   Serial.print("Time: ");
-  if (gps.time.isValid())
-  {
+  if (gps.time.isValid()){
     if (gps.time.hour() < 10) Serial.print(F("0"));
     Serial.print(gps.time.hour());
     Serial.print(":");
@@ -64,8 +57,7 @@ void displayNMEAMessage(){
     if (gps.time.centisecond() < 10) Serial.print(F("0"));
     Serial.println(gps.time.centisecond());
   }
-  else
-  {
+  else{
     Serial.println("Not Available");
   }
 
