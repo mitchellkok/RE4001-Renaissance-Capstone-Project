@@ -3,7 +3,7 @@
 #define VSPI_MISO 19
 #define VSPI_MOSI 23
 #define VSPI_SCLK 18
-#define VSPI_CS   15              
+#define VSPI_CS   5              
 
 void setup (void)
 {
