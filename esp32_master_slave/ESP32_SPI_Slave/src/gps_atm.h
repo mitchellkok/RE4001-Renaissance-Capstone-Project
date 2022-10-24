@@ -12,6 +12,7 @@
 
 
 // Pins
+///// FIXME: ESP32 WROOM 32D has only one UART BUS!
 #define RXPin 16
 #define TXPin 17
 
@@ -130,7 +131,7 @@ void init3in1(){
 }
 
 void dispAtmData(){
-    sensors_event_t temp, pressure, humidity;
+    sensors_event_t temp, pressure, humidity; // 36 byte data struct
     ms8607.getEvent(&pressure, &temp, &humidity);
     Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
     Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
@@ -152,9 +153,6 @@ void GPS(){
       break;
     }
   }
-
-  Serial.println("\nReading 3 in 1");
-  dispAtmData();
 }
 
 
