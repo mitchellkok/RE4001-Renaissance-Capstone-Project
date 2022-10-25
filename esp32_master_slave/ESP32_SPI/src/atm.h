@@ -20,10 +20,10 @@ void init3in1(){
     delay(1000);
     if(!ms8607.begin()){
       Serial.println("Failed to find MS8607 chip again!");
-      while(true){
-        Serial.println("Cannot start chip");
-        delay(500);
-      }
+      // while(true){
+      //   Serial.println("Cannot start chip");
+      //   delay(500);
+      // }
     }
   } else {
     Serial.println("MS8607 initialised!");

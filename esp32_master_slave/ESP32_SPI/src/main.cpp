@@ -4,6 +4,7 @@
 #include <atm.h>
 #include <imu_thermo.h>
 #include <gravity_so2.h>
+#include <lora_tx.h>
 
 data_union tx_union;
 data_union rx_union;
@@ -17,18 +18,22 @@ void setup (void)
   // gpsSerial.begin(GPSBaud);
   init3in1();
   gravity_so2_setup();
-  // imu_thermo_setup();
+  imu_thermo_setup();
+  lora_setup();
+
   Serial.println("Ready\n");             
 }
 
 void loop(void)
 {
   // GPS();
-  // imu_thermo();
+  imu_thermo();
   dispAtmData();
 
   Serial.println("\nReading Gravity SO2");
   gravity_so2();
+
+  lora();
 
   trigger_cmd[1]++; // counter to track trigger number
   Serial.printf("SPI Master Command Sent: %d", trigger_cmd[0]);Serial.println("");
