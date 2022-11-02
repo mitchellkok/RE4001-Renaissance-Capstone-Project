@@ -53,6 +53,7 @@ void buffer_setup(data_union rx, data_union tx, bool print) {
 }
 
 void spi_rxtx(byte* cmd, data_union rx, data_union tx){
+  cli(); //stop interrupts 
   memcpy(tx.buf, cmd, BUF_LEN); // load in command to trigger readings
 
   digitalWrite(VSPI_CS, LOW);  // pull chip select low
@@ -61,4 +62,5 @@ void spi_rxtx(byte* cmd, data_union rx, data_union tx){
 
   print_rxtx(rx, tx);
   Serial.println();
+  sei(); //resume interrupts 
 }
