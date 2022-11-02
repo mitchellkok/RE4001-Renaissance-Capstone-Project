@@ -52,15 +52,15 @@ void buffer_setup(data_union rx, data_union tx, bool print) {
   if (print) {print_rxtx(rx, tx);}
 }
 
-void spi_rxtx(byte* cmd, data_union rx, data_union tx){
+void spi_rxtx(byte* cmd, data_union *rx, data_union *tx){
   cli(); //stop interrupts 
-  memcpy(tx.buf, cmd, BUF_LEN); // load in command to trigger readings
+  memcpy((*tx).buf, cmd, BUF_LEN); // load in command to trigger readings
 
   digitalWrite(VSPI_CS, LOW);  // pull chip select low
-  SPI.transferBytes(tx.buf, rx.buf, BUF_LEN);
+  SPI.transferBytes((*tx).buf, (*rx).buf, BUF_LEN);
   digitalWrite(VSPI_CS, HIGH);
 
-  print_rxtx(rx, tx);
+  print_rxtx((*rx), (*tx));
   Serial.println();
   sei(); //resume interrupts 
 }

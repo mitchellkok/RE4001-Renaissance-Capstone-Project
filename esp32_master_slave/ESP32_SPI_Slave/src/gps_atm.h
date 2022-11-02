@@ -12,9 +12,19 @@
 
 
 // Pins
-///// FIXME: ESP32 WROOM 32D has only one UART BUS!
 #define RXPin 16
 #define TXPin 17
+
+union atm_union {
+    float fl[3]; // float size is 4 Bytes
+    uint8_t buf[12];
+};
+
+union gps_union {
+    double db[4]; // double size is 8 Bytes
+    uint8_t buf[32];
+};
+
 
 // Global Variables
 int GPSBaud = 9600;
@@ -43,13 +53,14 @@ void displayNMEAMessage(){
   if(true){
     Serial.print("Number of Satellites Detected: ");
     Serial.println(gps.satellites.value());
-    
   }
   if (gps.location.isValid()){
     Serial.print("Latitude: ");
-    Serial.println(gps.location.lat(), 6);
+    Serial.print(gps.location.lat(), 6);
+
     Serial.print("Longitude: ");
     Serial.println(gps.location.lng(), 6);
+
     Serial.print("Altitude: ");
     Serial.println(gps.altitude.meters());
   }
@@ -130,13 +141,19 @@ void init3in1(){
   Serial.println("");
 }
 
-void dispAtmData(){
+atm_union dispAtmData(){
     sensors_event_t temp, pressure, humidity; // 36 byte data struct
     ms8607.getEvent(&pressure, &temp, &humidity);
     Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
     Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
     Serial.print("Humidity: ");Serial.print(humidity.relative_humidity); Serial.println(" %rH");
     Serial.println("");
+
+    atm_union atm_readings;
+    atm_readings.fl[0] = temp.temperature;
+    atm_readings.fl[1] = pressure.pressure;
+    atm_readings.fl[2] = humidity.relative_humidity;
+    return atm_readings;
 }
 
 void GPS(){

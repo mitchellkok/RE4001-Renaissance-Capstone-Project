@@ -33,11 +33,14 @@ void loop() {
         buffer_setup(rx_union, tx_union, false);
         if (command == 0xAA) {
             // Trigger readings, prepare readings buffer
-            tx_union.buf[0] = 1;  // symbol to represent readings packet
-            tx_union.buf[2]++;    // counter to track trigger number
+            // tx_union.buf[0] = 1;  // symbol to represent readings packet
+            // tx_union.buf[2]++;    // counter to track trigger number
 
             Serial.println("\nReading 3 in 1");
-            dispAtmData();
+            atm_union atm_readings = dispAtmData();
+            for (int i = 0; i < 12; i++) {
+                tx_union.buf[i] = atm_readings.buf[i];  // load atm readings into buffer
+            }
             GPS();
             // Add in readings to send on 0xBB
         } else if (rx_union.buf[0] == 0xBB) {
