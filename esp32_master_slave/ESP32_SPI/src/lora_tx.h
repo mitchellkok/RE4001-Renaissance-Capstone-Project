@@ -10,9 +10,9 @@
 #include <RH_RF95.h>
 
   /* ESP32 feather w/wing */
-  #define RFM95_RST     27   // "A"
-  #define RFM95_CS      33   // "B"
-  #define RFM95_INT     12   //  next to A
+  #define RFM95_RST     26  // "A"
+  #define RFM95_CS      25  // "B"
+  #define RFM95_INT     14  //  next to A
 
 
 // Change to 434.0 or other frequency, must match RX's freq!
@@ -37,14 +37,12 @@ void lora_setup()
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     Serial.println("Uncomment '#define SERIAL_DEBUG' in RH_RF95.cpp for detailed debug info");
-    while (1);
   }
   Serial.println("LoRa radio init OK!");
 
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
   if (!rf95.setFrequency(RF95_FREQ)) {
     Serial.println("setFrequency failed");
-    while (1);
   }
   Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
   
@@ -74,7 +72,7 @@ void lora()
 
   Serial.println("Waiting for packet to complete..."); 
   delay(10);
-  rf95.waitPacketSent();
+  rf95.waitPacketSent(2000);  // 2000ms timeout
   // Now wait for a reply
   uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
   uint8_t len = sizeof(buf);

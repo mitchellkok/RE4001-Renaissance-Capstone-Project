@@ -28,7 +28,8 @@ void print_rxtx(data_union rx, data_union tx) {
 void spi_setup() {
     // HSPI = CS: 15, CLK: 14, MOSI: 13, MISO: 12 -> default
     slave.setDataMode(SPI_MODE0);
-    slave.begin();
+    bool status = slave.begin();
+    // bool status = slave.begin(VSPI, SCK, MISO, MOSI, 14);
 }
 
 void buffer_setup(data_union rx, data_union tx, bool print) {

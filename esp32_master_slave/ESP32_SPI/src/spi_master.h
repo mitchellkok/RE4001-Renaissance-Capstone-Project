@@ -4,7 +4,7 @@
 // #define VSPI_MISO 19
 // #define VSPI_MOSI 23
 // #define VSPI_SCLK 18
-// #define VSPI_CS   5     
+#define VSPI_CS  0     
 #define BUF_LEN 14  
 #define READINGS_DELAY_MS 2000
 #define READINGS_INTERVAL_MS 5000
@@ -38,8 +38,8 @@ void print_rxtx(data_union rx, data_union tx) {
 void spi_setup() {
   SPI.begin();                            //Begins the SPI commnuication
   SPI.setClockDivider(SPI_CLOCK_DIV8);    //Sets clock for SPI communication at 1 MHz
-  pinMode(SS, OUTPUT);
-  digitalWrite(SS, HIGH);
+  pinMode(VSPI_CS, OUTPUT);
+  digitalWrite(VSPI_CS, HIGH);
 
   trigger_cmd[0] = 0xAA;
   request_cmd[0] = 0xBB;
@@ -55,9 +55,9 @@ void buffer_setup(data_union rx, data_union tx, bool print) {
 void spi_rxtx(byte* cmd, data_union rx, data_union tx){
   memcpy(tx.buf, cmd, BUF_LEN); // load in command to trigger readings
 
-  digitalWrite(SS, LOW);  // pull chip select low
+  digitalWrite(VSPI_CS, LOW);  // pull chip select low
   SPI.transferBytes(tx.buf, rx.buf, BUF_LEN);
-  digitalWrite(SS, HIGH);
+  digitalWrite(VSPI_CS, HIGH);
 
   print_rxtx(rx, tx);
   Serial.println();

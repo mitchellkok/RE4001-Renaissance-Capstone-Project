@@ -144,7 +144,7 @@ void GPS(){
   while (gpsSerial.available() > 0){
     if (gps.encode(gpsSerial.read())){
       displayNMEAMessage();
-      // break; // TODO: See if need to break here to avoid infinite loop
+      break; // TODO: See if need to break here to avoid infinite loop
     }
     // If there are no characters coming in
     // over the software serial port, show a "No GPS detected" error

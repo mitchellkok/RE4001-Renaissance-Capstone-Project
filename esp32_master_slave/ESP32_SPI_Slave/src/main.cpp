@@ -18,7 +18,7 @@ void setup() {
     gpsSerial.begin(GPSBaud);
     init3in1();
 
-    Serial.println("Ready");
+    Serial.println("Slave Ready");
 }
 
 void loop() {
@@ -56,3 +56,4 @@ void loop() {
     Serial.println("");
     digitalWrite(LED, false);
 }
+//*/
