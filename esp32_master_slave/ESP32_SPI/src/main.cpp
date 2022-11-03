@@ -5,6 +5,7 @@
 #include <imu_thermo.h>
 #include <gravity_so2.h>
 #include <lora_tx.h>
+#include <sd_rtc.h>
 
 data_union tx_union;
 data_union rx_union;
@@ -14,6 +15,8 @@ void setup (void)
   Serial.begin(9600);
   spi_setup();
   buffer_setup(rx_union, tx_union, true);  
+  sd_rtc_setup();
+  
 
   // gpsSerial.begin(GPSBaud);
   init3in1();
@@ -35,6 +38,7 @@ void loop(void)
 
   lora();
 
+  cli();
   trigger_cmd[1]++; // counter to track trigger number
   Serial.println("");Serial.printf("SPI Master Command Sent: %d", trigger_cmd[0]);Serial.println("");
   spi_rxtx(trigger_cmd, &rx_union, &tx_union); // Send command to trigger readings (Command == 0xAA)
@@ -53,7 +57,10 @@ void loop(void)
       Serial.println("");
   }
   // TODO: read, check checksum (IF MISMATCH, request immediately)
+  sei();
   
   Serial.println("");
+  delay(2000);
+  sd_save_data();
   delay(READINGS_INTERVAL_MS - READINGS_DELAY_MS); // remaining delay before triggering readings
 }

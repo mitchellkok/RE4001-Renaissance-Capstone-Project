@@ -26,10 +26,10 @@ void gravity_so2() {
   Serial.print("Ambient ");
   Serial.print(gas.queryGasType());
   Serial.print(" concentration is: ");
-  Serial.print(gas.readGasConcentrationPPM());
+  Serial.print(gas.readGasConcentrationPPM());  // float
   Serial.println(" %vol");
   Serial.print("The board temperature is: ");
-  Serial.print(gas.readTempC());
+  Serial.print(gas.readTempC());  // float
   Serial.println(" ℃");
   Serial.println();
 }

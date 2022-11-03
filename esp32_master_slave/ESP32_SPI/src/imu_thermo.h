@@ -218,9 +218,9 @@ void imu_thermo_setup()
 void imu_thermo()
 {
   // Thermocouple Temperature
-  Serial.print("Hot Junction: "); Serial.println(mcp.readThermocouple());
-  Serial.print("Cold Junction: "); Serial.println(mcp.readAmbient());
-  Serial.print("ADC: "); Serial.print(mcp.readADC() * 2); Serial.println(" uV");
+  Serial.print("Hot Junction: "); Serial.println(mcp.readThermocouple()); // float
+  Serial.print("Cold Junction: "); Serial.println(mcp.readAmbient());     // float
+  Serial.print("ADC: "); Serial.print(mcp.readADC() * 2); Serial.println(" uV");  // uint32_t
 
   // IMU Readings
   //  /* Get a new normalized sensor event */
@@ -231,25 +231,25 @@ void imu_thermo()
 
   Serial.println("");
   Serial.print("Temperature ");
-  Serial.print(temp.temperature);
+  Serial.print(temp.temperature);  // float
   Serial.println(" deg C");
 
   /* Display the results (acceleration is measured in m/s^2) */
   Serial.print("Accel X: ");
-  Serial.print(accel.acceleration.x);
+  Serial.print(accel.acceleration.x); // float
   Serial.print(" \tY: ");
-  Serial.print(accel.acceleration.y);
+  Serial.print(accel.acceleration.y); // float
   Serial.print(" \tZ: ");
-  Serial.print(accel.acceleration.z);
+  Serial.print(accel.acceleration.z); // float
   Serial.println(" m/s^2 ");
 
   /* Display the results (rotation is measured in rad/s) */
   Serial.print("Gyro X: ");
-  Serial.print(gyro.gyro.x);
+  Serial.print(gyro.gyro.x); // float
   Serial.print(" \tY: ");
-  Serial.print(gyro.gyro.y);
+  Serial.print(gyro.gyro.y); // float
   Serial.print(" \tZ: ");
-  Serial.print(gyro.gyro.z);
+  Serial.print(gyro.gyro.z); // float
   Serial.println(" radians/s ");
   Serial.println();
 
