@@ -21,8 +21,8 @@ union atm_union {
 };
 
 union gps_union {
-    double db[4]; // double size is 8 Bytes
-    uint8_t buf[32];
+    double db[7]; // double size is 8 Bytes
+    uint8_t buf[56];
 };
 
 
@@ -63,6 +63,15 @@ void displayNMEAMessage(){
 
     Serial.print("Altitude: ");
     Serial.println(gps.altitude.meters());
+
+    Serial.print("Course: ");
+    Serial.println(gps.course.deg());
+
+    Serial.print("Ground Speed: ");
+    Serial.println(gps.speed.mps());
+
+    Serial.print("HDOP: ");
+    Serial.println(gps.hdop.value());
   }
   else{
     Serial.println("Location: Not Available");
