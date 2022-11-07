@@ -1,7 +1,7 @@
 #include <ESP32SPISlave.h>
 #include <gps_atm.h>
 
-#define BUF_LEN 43
+#define BUF_LEN 64
 
 union data_union {
     struct readings {
