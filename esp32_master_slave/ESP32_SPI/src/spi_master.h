@@ -45,11 +45,11 @@ void spi_setup() {
   request_cmd[0] = 0xBB;
 }
 
-void buffer_setup(data_union rx, data_union tx, bool print) {
-  memset(tx.buf, 0, BUF_LEN); // clear buffers
-  memset(rx.buf, 0, BUF_LEN);
-  memcpy(tx.buf, command, BUF_LEN); //copy test command to buffer
-  if (print) {print_rxtx(rx, tx);}
+void buffer_setup(data_union* rx, data_union* tx, bool print) {
+  memset((*tx).buf, 0, BUF_LEN); // clear buffers
+  memset((*rx).buf, 0, BUF_LEN);
+  memcpy((*tx).buf, command, BUF_LEN); //copy test command to buffer
+  if (print) {print_rxtx((*rx), (*tx));}
 }
 
 void spi_rxtx(byte* cmd, data_union *rx, data_union *tx){

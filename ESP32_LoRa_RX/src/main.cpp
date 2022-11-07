@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <RH_RF95.h>
+#include <data_structs.h>
 
 /* ESP32 feather w/wing */
 #define RFM95_RST     27   // "A"
@@ -10,11 +11,11 @@
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 433.0
 
-// Singleton instance of the radio driver
-RH_RF95 rf95(RFM95_CS, RFM95_INT);
-
 // Blinky on receipt
 #define LED 13
+
+// Singleton instance of the radio driver
+RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 void setup()
 {
@@ -63,17 +64,18 @@ void loop()
   if (rf95.available())
   {
     // Should be a message for us now
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-    uint8_t len = sizeof(buf);
+    // uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+    lora_union rx;
+    uint8_t len = sizeof(rx.buf);
 
-    if (rf95.recv(buf, &len))
+    if (rf95.recv(rx.buf, &len))
     {
       digitalWrite(LED, HIGH);
-      RH_RF95::printBuffer("Received: ", buf, len);
-      Serial.print("Got: ");
-      Serial.println((char*)buf);
-       Serial.print("RSSI: ");
+      Serial.print("\nRSSI: ");
       Serial.println(rf95.lastRssi(), DEC);
+      Serial.print("Received LEN = ");
+      Serial.println(sizeof(rx.buf));
+      print_lora_union(rx);
 
       // Send a reply
       uint8_t data[] = "And hello back to you";

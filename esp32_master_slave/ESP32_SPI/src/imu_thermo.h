@@ -18,6 +18,16 @@
 // #define SO2_I2C_ADDRESS    0x74
 // DFRobot_GAS_I2C gas(&Wire ,SO2_I2C_ADDRESS);
 
+union thermo_union {
+    float fl[3]; // float size is 4 Bytes, or uin32_t
+    uint8_t buf[12];
+};
+
+union imu_union {
+    float fl[7]; // float size is 4 Bytes
+    uint8_t buf[28];
+};
+
 Adafruit_MCP9600 mcp;
 Adafruit_LSM6DSOX sox;
 
@@ -28,30 +38,15 @@ void imu_thermo_setup()
     /* Initialise the driver with THERMOCOUPLE_I2C_ADDRESS and the default I2C bus. */
     if (! mcp.begin(THERMOCOUPLE_I2C_ADDRESS)) {
         Serial.println("Thermocouple sensor not found. Check wiring!");
-        // while (1);
     }
   
     // Check for LSM module
     if (!sox.begin_I2C()) {
         Serial.println("SOX not initialised");
-    // if (!sox.begin_SPI(LSM_CS)) {
-    // if (!sox.begin_SPI(LSM_CS, LSM_SCK, LSM_MISO, LSM_MOSI)) {
-    // Serial.println("Failed to find LSM6DSOX chip");
-    // while (1) {
-    //   delay(10);
-    // }
-  }
-
-//   // Check for Gas Sensor Module
-//   while(!gas.begin())
-//   {
-//     Serial.println("NO Gas Sensor Devices !");
-//     delay(1000);
-//   }
+    }
 
   Serial.println("LSM6DSOX Found!");
   Serial.println("Found MCP9600!");
-//   Serial.println("The SO2 sensor device is connected successfully!");
 
   // Thermocouple setup
   mcp.setADCresolution(MCP9600_ADCRESOLUTION_18);
@@ -207,21 +202,23 @@ void imu_thermo_setup()
     Serial.println("6.66 KHz");
     break;
   }
-
-//   // SO2 Sensor Setup
-//   gas.changeAcquireMode(gas.PASSIVITY);
-//   delay(1000);
-
-//   gas.setTempCompensation(gas.OFF);
 }
 
-void imu_thermo()
-{
+thermo_union thermo() {
   // Thermocouple Temperature
   Serial.print("Hot Junction: "); Serial.println(mcp.readThermocouple()); // float
   Serial.print("Cold Junction: "); Serial.println(mcp.readAmbient());     // float
-  Serial.print("ADC: "); Serial.print(mcp.readADC() * 2); Serial.println(" uV");  // uint32_t
+  Serial.print("ADC: "); Serial.print(mcp.readADC() * 2); Serial.println(" uV");  // int32_t
 
+  thermo_union thermo_readings;
+  thermo_readings.fl[0] = mcp.readThermocouple();
+  thermo_readings.fl[1] = mcp.readAmbient();
+  thermo_readings.fl[2] = (float) mcp.readADC();
+  return thermo_readings;
+}
+
+imu_union imu()
+{
   // IMU Readings
   //  /* Get a new normalized sensor event */
   sensors_event_t accel;
@@ -253,16 +250,13 @@ void imu_thermo()
   Serial.println(" radians/s ");
   Serial.println();
 
-//   // SO2 Gas Sensor
-//   Serial.print("Ambient ");
-//   Serial.print(gas.queryGasType());
-//   Serial.print(" concentration is: ");
-//   Serial.print(gas.readGasConcentrationPPM());
-//   Serial.println(" %vol");
-//   Serial.print("The board temperature is: ");
-//   Serial.print(gas.readTempC());
-//   Serial.println(" ℃");
-//   Serial.println();
-
-//   delay(1000);
+  imu_union imu_readings;
+  imu_readings.fl[0] = temp.temperature;
+  imu_readings.fl[1] = accel.acceleration.x;
+  imu_readings.fl[2] = accel.acceleration.y;
+  imu_readings.fl[3] = accel.acceleration.z;
+  imu_readings.fl[4] = gyro.gyro.x;
+  imu_readings.fl[5] = gyro.gyro.y;
+  imu_readings.fl[6] = gyro.gyro.z;
+  return imu_readings; 
 }

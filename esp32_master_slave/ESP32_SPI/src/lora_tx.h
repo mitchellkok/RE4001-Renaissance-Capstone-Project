@@ -18,6 +18,10 @@
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 433.0
 
+// union lora_union_tx {
+//     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes
+// };
+
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
@@ -56,19 +60,11 @@ void lora_setup()
 
 int16_t packetnum = 0;  // packet counter, we increment per xmission
 
-void lora()
+void lora(uint8_t* tx)
 {
-  // delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
-  Serial.println("Transmitting..."); // Send a message to rf95_server
-  
-  char radiopacket[20] = "Hello World #      ";
-  itoa(packetnum++, radiopacket+13, 10);
-  Serial.print("Sending "); Serial.println(radiopacket);
-  radiopacket[19] = 0;
-  
-  Serial.println("Sending...");
-  delay(10);
-  rf95.send((uint8_t *)radiopacket, 20);
+  Serial.print("LoRa TX Sending... ");
+  Serial.print(RH_RF95_MAX_MESSAGE_LEN); Serial.println(" Bytes");
+  rf95.send(tx, RH_RF95_MAX_MESSAGE_LEN);
 
   Serial.println("Waiting for packet to complete..."); 
   delay(10);

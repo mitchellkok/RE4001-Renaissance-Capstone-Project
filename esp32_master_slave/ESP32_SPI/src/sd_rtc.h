@@ -26,6 +26,14 @@
 
 #define LED 12
 
+union datetime_union {
+    struct datetime {
+      uint16_t year;
+      uint8_t b[5];
+    } datetime;
+    uint8_t buf[14];
+};
+
 // Initialize RTC
 RTC_PCF8523 rtc;
 
@@ -33,6 +41,19 @@ RTC_PCF8523 rtc;
 File myFile;
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+datetime_union get_datetime() {
+  DateTime now = rtc.now();
+
+  datetime_union datetime;
+  datetime.datetime.year = now.year();
+  datetime.datetime.b[0] = now.month();
+  datetime.datetime.b[1] = now.day();
+  datetime.datetime.b[2] = now.hour();
+  datetime.datetime.b[3] = now.minute();
+  datetime.datetime.b[4] = now.second();
+  return datetime;
+}
 
 // Function to save data into SD card, should pass in parameters of sensor data
 void sd_save_data() {
@@ -53,7 +74,7 @@ void sd_save_data() {
     Serial.print(now.second(), DEC); // uint8_t
     Serial.println();
 
-    myFile = SD.open("/test3.txt", FILE_APPEND);
+    myFile = SD.open("/test4.txt", FILE_APPEND);
     if (myFile) {
       // Writes raw data to SD Card
       myFile.print("testing 1, 2, 3");
