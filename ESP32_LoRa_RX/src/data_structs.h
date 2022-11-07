@@ -16,8 +16,17 @@ union atm_union {
 };
 
 union gps_union {
-    double db[4]; // double size is 8 Bytes
-    uint8_t buf[32];
+    struct readings {
+      uint32_t satellites;
+      uint32_t hdop;
+      double lat;
+      double lng;
+      double meters;
+      double deg;
+      double mps;
+      double value;
+    } readings;
+    uint8_t buf[56];
 };
 
 union thermo_union {
@@ -37,18 +46,19 @@ union gravity_so2_union {
 
 union lora_union {
     struct data_struct {
-      uint8_t start_byte; // = STARTBYTE;
+      uint8_t start_byte;
       datetime_union datetime;
       gravity_so2_union gravity_so2;
       atm_union atm_master;
       atm_union atm_slave;
-      // TODO: add GPS
+      gps_union gps_slave;
       imu_union imu;
       thermo_union thermocouple;
       // TODO: add Batt voltage
     } data_struct;
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes
 };
+
 
 void print_lora_union(lora_union rx) {
     Serial.println("datetime:");
@@ -69,6 +79,14 @@ void print_lora_union(lora_union rx) {
     Serial.print("   "); Serial.println(rx.data_struct.atm_slave.fl[0]);
     Serial.print("   "); Serial.println(rx.data_struct.atm_slave.fl[1]);
     Serial.print("   "); Serial.println(rx.data_struct.atm_slave.fl[2]);
+    Serial.println("gps slave:");
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.satellites);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.lat);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.lng);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.meters);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.deg);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.mps);
+    Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.hdop);
     Serial.println("imu:");
     Serial.print("   "); Serial.println(rx.data_struct.imu.fl[0]);
     Serial.print("   "); Serial.println(rx.data_struct.imu.fl[1]);

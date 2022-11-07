@@ -1,14 +1,10 @@
 #include "DFRobot_MultiGasSensor.h"
+#include <data_structs.h>
 
 //Enabled by default, use IIC communication at this time. Use UART communication when disabled
 #define I2C_COMMUNICATION
 #define SO2_I2C_ADDRESS    0x74
 DFRobot_GAS_I2C gas(&Wire ,SO2_I2C_ADDRESS);
-
-union gravity_so2_union {
-    float fl[2]; // float size is 4 Bytes
-    uint8_t buf[8];
-};
 
 void gravity_so2_setup() {
 

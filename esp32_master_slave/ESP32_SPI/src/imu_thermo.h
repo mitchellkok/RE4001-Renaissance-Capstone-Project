@@ -6,6 +6,7 @@
 
 // LMU
 #include <Adafruit_LSM6DSOX.h>
+#include <data_structs.h>
 
 // // SO2 Sensor
 // #include "DFRobot_MultiGasSensor.h"
@@ -17,16 +18,6 @@
 #define I2C_COMMUNICATION
 // #define SO2_I2C_ADDRESS    0x74
 // DFRobot_GAS_I2C gas(&Wire ,SO2_I2C_ADDRESS);
-
-union thermo_union {
-    float fl[3]; // float size is 4 Bytes, or uin32_t
-    uint8_t buf[12];
-};
-
-union imu_union {
-    float fl[7]; // float size is 4 Bytes
-    uint8_t buf[28];
-};
 
 Adafruit_MCP9600 mcp;
 Adafruit_LSM6DSOX sox;

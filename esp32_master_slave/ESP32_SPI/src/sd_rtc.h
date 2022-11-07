@@ -23,16 +23,9 @@
 
 // Date and time functions using a PCF8523 RTC connected via I2C and Wire lib
 #include "RTClib.h"
+#include <data_structs.h>
 
 #define LED 12
-
-union datetime_union {
-    struct datetime {
-      uint16_t year;
-      uint8_t b[5];
-    } datetime;
-    uint8_t buf[14];
-};
 
 // Initialize RTC
 RTC_PCF8523 rtc;

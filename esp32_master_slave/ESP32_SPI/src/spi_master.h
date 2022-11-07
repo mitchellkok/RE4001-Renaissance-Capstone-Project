@@ -1,18 +1,14 @@
 #include <Arduino.h>
 #include <SPI.h>     
+#include <data_structs.h>
 
 // #define VSPI_MISO 19
 // #define VSPI_MOSI 23
 // #define VSPI_SCLK 18
 #define VSPI_CS  0     
-#define BUF_LEN 14  
+#define BUF_LEN 43
 #define READINGS_DELAY_MS 2000
 #define READINGS_INTERVAL_MS 5000
-
-union data_union {
-    char s[BUF_LEN];
-    uint8_t buf[BUF_LEN];
-};
 
 
 byte command[BUF_LEN]     = {0x48,0x65,0x6c,0x6c,0x6f,0x2c,0x20,0x57,0x6f,0x72,0x6c,0x64,0x21,0x00};
@@ -21,13 +17,13 @@ byte request_cmd[BUF_LEN];
 
 void print_rxtx(data_union rx, data_union tx) {
   // Master does TX then RX
-  Serial.print("TX BUFFER: ");
+  Serial.println("TX BUFFER: ");
   for(int i=0;i<BUF_LEN;i++){
     Serial.print(tx.buf[i], HEX);
     Serial.print(" ");
   }
   Serial.println("");
-  Serial.print("RX BUFFER: ");
+  Serial.println("RX BUFFER: ");
   for(int i=0;i<BUF_LEN;i++){
     Serial.print(rx.buf[i], HEX);
     Serial.print(" ");

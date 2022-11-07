@@ -10,198 +10,197 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_Sensor.h>
 
+#ifndef GPS_ATM
+  #define GPS_ATM
+  // Pins
+  #define RXPin 16
+  #define TXPin 17
 
-// Pins
-#define RXPin 16
-#define TXPin 17
+  union atm_union {
+      float fl[3]; // float size is 4 Bytes
+      uint8_t buf[12];
+  };
 
-union atm_union {
-    float fl[3]; // float size is 4 Bytes
-    uint8_t buf[12];
-};
-
-union gps_union {
-    double db[7]; // double size is 8 Bytes
-    uint8_t buf[56];
-};
-
-
-// Global Variables
-int GPSBaud = 9600;
-int timeZone = 8; 
-unsigned long previousMillis = 0;
-const long blinkInterval = 200;
-bool ledState = LOW;
-
-
-SoftwareSerial gpsSerial(RXPin, TXPin);
-TinyGPSPlus gps; // gps
-Adafruit_MS8607 ms8607; // 3in1 Sensor
+  union gps_union {
+      struct readings {
+        uint32_t satellites;
+        uint32_t hdop;
+        double lat;
+        double lng;
+        double meters;
+        double deg;
+        double mps;
+        double value;
+      } readings;
+      uint8_t buf[56];
+  };
 
 
-void blinkLed(){
-  unsigned long currentMillis = millis(); // milliseconds from power up
-  if(currentMillis-previousMillis>=blinkInterval){
-    previousMillis=currentMillis;
-    ledState = (ledState == LOW) ? HIGH : LOW;
-    digitalWrite(BUILTIN_LED, ledState);
-    Serial.println(String(ledState));
-  }
-}
+  // Global Variables
+  int GPSBaud = 9600;
+  int timeZone = 8; 
+  unsigned long previousMillis = 0;
+  const long blinkInterval = 200;
+  bool ledState = LOW;
 
-void displayNMEAMessage(){
-  if(true){
-    Serial.print("Number of Satellites Detected: ");
-    Serial.println(gps.satellites.value());
-  }
-  if (gps.location.isValid()){
-    Serial.print("Latitude: ");
-    Serial.print(gps.location.lat(), 6);
 
-    Serial.print("Longitude: ");
-    Serial.println(gps.location.lng(), 6);
+  SoftwareSerial gpsSerial(RXPin, TXPin);
+  TinyGPSPlus gps; // gps
+  Adafruit_MS8607 ms8607; // 3in1 Sensor
 
-    Serial.print("Altitude: ");
-    Serial.println(gps.altitude.meters());
 
-    Serial.print("Course: ");
-    Serial.println(gps.course.deg());
-
-    Serial.print("Ground Speed: ");
-    Serial.println(gps.speed.mps());
-
-    Serial.print("HDOP: ");
-    Serial.println(gps.hdop.value());
-  }
-  else{
-    Serial.println("Location: Not Available");
-  }
-  
-  Serial.print("Date: ");
-  if (gps.date.isValid()){
-    Serial.print(gps.date.month());
-    Serial.print("/");
-    Serial.print(gps.date.day());
-    Serial.print("/");
-    Serial.println(gps.date.year());
-  }
-  else{
-    Serial.println("Not Available");
-  }
-  Serial.print("Time: ");
-  if (gps.time.isValid()){
-    if (gps.time.hour() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.hour());
-    Serial.print(":");
-    if (gps.time.minute() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.minute());
-    Serial.print(":");
-    if (gps.time.second() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.second());
-    Serial.print(".");
-    if (gps.time.centisecond() < 10) Serial.print(F("0"));
-    Serial.println(gps.time.centisecond());
-  }
-  else{
-    Serial.println("Not Available");
+  void blinkLed(){
+    unsigned long currentMillis = millis(); // milliseconds from power up
+    if(currentMillis-previousMillis>=blinkInterval){
+      previousMillis=currentMillis;
+      ledState = (ledState == LOW) ? HIGH : LOW;
+      digitalWrite(BUILTIN_LED, ledState);
+      Serial.println(String(ledState));
+    }
   }
 
-  Serial.println();
-  Serial.println();
-  delay(1000);
-}
+  gps_union displayNMEAMessage(){
+    if(true){
+      Serial.print("Number of Satellites Detected: ");
+      Serial.println(gps.satellites.value());
+    }
+    if (gps.location.isValid()){
+      Serial.print("Latitude: ");
+      Serial.print(gps.location.lat(), 6);
 
-void init3in1(){
-    if(!ms8607.begin()){
-    Serial.println("Failed to find MS8607 chip!");
-    // while(true){
-    //   Serial.println("Failed to find MS8607 chip!");
-    // };
-    delay(1000);
-    if(!ms8607.begin()){
-      Serial.println("Failed to find MS8607 chip again!");
+      Serial.print("Longitude: ");
+      Serial.println(gps.location.lng(), 6);
+
+      Serial.print("Altitude: ");
+      Serial.println(gps.altitude.meters());
+
+      Serial.print("Course: ");
+      Serial.println(gps.course.deg());
+
+      Serial.print("Ground Speed: ");
+      Serial.println(gps.speed.mps());
+
+      Serial.print("HDOP: ");
+      Serial.println(gps.hdop.value());
+    }
+    else{
+      Serial.println("Location: Not Available");
+    }
+    
+    Serial.print("Date: ");
+    if (gps.date.isValid()){
+      Serial.print(gps.date.month());
+      Serial.print("/");
+      Serial.print(gps.date.day());
+      Serial.print("/");
+      Serial.println(gps.date.year());
+    }
+    else{
+      Serial.println("Not Available");
+    }
+    Serial.print("Time: ");
+    if (gps.time.isValid()){
+      if (gps.time.hour() < 10) Serial.print(F("0"));
+      Serial.print(gps.time.hour());
+      Serial.print(":");
+      if (gps.time.minute() < 10) Serial.print(F("0"));
+      Serial.print(gps.time.minute());
+      Serial.print(":");
+      if (gps.time.second() < 10) Serial.print(F("0"));
+      Serial.print(gps.time.second());
+      Serial.print(".");
+      if (gps.time.centisecond() < 10) Serial.print(F("0"));
+      Serial.println(gps.time.centisecond());
+    }
+    else{
+      Serial.println("Not Available");
+    }
+
+    Serial.println();
+    Serial.println();
+
+    gps_union gps_readings;
+    gps_readings.readings.satellites = gps.satellites.value();
+    gps_readings.readings.lat = gps.location.lat();
+    gps_readings.readings.lng = gps.location.lng();
+    gps_readings.readings.meters = gps.altitude.meters();
+    gps_readings.readings.deg = gps.course.deg();
+    gps_readings.readings.mps = gps.speed.mps();
+    gps_readings.readings.hdop = gps.hdop.value();
+    return gps_readings;
+  }
+
+  void init3in1(){
+      if(!ms8607.begin()){
+      Serial.println("Failed to find MS8607 chip!");
       // while(true){
-      //   Serial.println("Cannot start chip");
-      //   delay(500);
-      // }
+      //   Serial.println("Failed to find MS8607 chip!");
+      // };
+      delay(1000);
+      if(!ms8607.begin()){
+        Serial.println("Failed to find MS8607 chip again!");
+        // while(true){
+        //   Serial.println("Cannot start chip");
+        //   delay(500);
+        // }
+      }
+    } else {
+      Serial.println("MS8607 initialised!");
     }
-  } else {
-    Serial.println("MS8607 initialised!");
-  }
 
-  ms8607.setHumidityResolution(MS8607_HUMIDITY_RESOLUTION_OSR_8b);
-  Serial.print("Humidity resolution set to ");
-  switch (ms8607.getHumidityResolution()){
-    case MS8607_HUMIDITY_RESOLUTION_OSR_12b: Serial.println("12-bit"); break;
-    case MS8607_HUMIDITY_RESOLUTION_OSR_11b: Serial.println("11-bit"); break;
-    case MS8607_HUMIDITY_RESOLUTION_OSR_10b: Serial.println("10-bit"); break;
-    case MS8607_HUMIDITY_RESOLUTION_OSR_8b: Serial.println("8-bit"); break;
-  }
-  // ms8607.setPressureResolution(MS8607_PRESSURE_RESOLUTION_OSR_4096);
-  Serial.print("Pressure and Temperature resolution set to ");
-  switch (ms8607.getPressureResolution()){
-    case MS8607_PRESSURE_RESOLUTION_OSR_256: Serial.println("256"); break;
-    case MS8607_PRESSURE_RESOLUTION_OSR_512: Serial.println("512"); break;
-    case MS8607_PRESSURE_RESOLUTION_OSR_1024: Serial.println("1024"); break;
-    case MS8607_PRESSURE_RESOLUTION_OSR_2048: Serial.println("2048"); break;
-    case MS8607_PRESSURE_RESOLUTION_OSR_4096: Serial.println("4096"); break;
-    case MS8607_PRESSURE_RESOLUTION_OSR_8192: Serial.println("8192"); break;
-  }
-  Serial.println("");
-}
-
-atm_union dispAtmData(){
-    sensors_event_t temp, pressure, humidity; // 36 byte data struct
-    ms8607.getEvent(&pressure, &temp, &humidity);
-    Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
-    Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
-    Serial.print("Humidity: ");Serial.print(humidity.relative_humidity); Serial.println(" %rH");
+    ms8607.setHumidityResolution(MS8607_HUMIDITY_RESOLUTION_OSR_8b);
+    Serial.print("Humidity resolution set to ");
+    switch (ms8607.getHumidityResolution()){
+      case MS8607_HUMIDITY_RESOLUTION_OSR_12b: Serial.println("12-bit"); break;
+      case MS8607_HUMIDITY_RESOLUTION_OSR_11b: Serial.println("11-bit"); break;
+      case MS8607_HUMIDITY_RESOLUTION_OSR_10b: Serial.println("10-bit"); break;
+      case MS8607_HUMIDITY_RESOLUTION_OSR_8b: Serial.println("8-bit"); break;
+    }
+    // ms8607.setPressureResolution(MS8607_PRESSURE_RESOLUTION_OSR_4096);
+    Serial.print("Pressure and Temperature resolution set to ");
+    switch (ms8607.getPressureResolution()){
+      case MS8607_PRESSURE_RESOLUTION_OSR_256: Serial.println("256"); break;
+      case MS8607_PRESSURE_RESOLUTION_OSR_512: Serial.println("512"); break;
+      case MS8607_PRESSURE_RESOLUTION_OSR_1024: Serial.println("1024"); break;
+      case MS8607_PRESSURE_RESOLUTION_OSR_2048: Serial.println("2048"); break;
+      case MS8607_PRESSURE_RESOLUTION_OSR_4096: Serial.println("4096"); break;
+      case MS8607_PRESSURE_RESOLUTION_OSR_8192: Serial.println("8192"); break;
+    }
     Serial.println("");
-
-    atm_union atm_readings;
-    atm_readings.fl[0] = temp.temperature;
-    atm_readings.fl[1] = pressure.pressure;
-    atm_readings.fl[2] = humidity.relative_humidity;
-    return atm_readings;
-}
-
-void GPS(){
-  Serial.println("Attempting GPS");
-  while (gpsSerial.available() > 0){
-    if (gps.encode(gpsSerial.read())){
-      displayNMEAMessage();
-      break; // TODO: See if need to break here to avoid infinite loop
-    }
-    // If there are no characters coming in
-    // over the software serial port, show a "No GPS detected" error
-    if (gps.charsProcessed() < 10){
-      Serial.println("No GPS detected");
-      break;
-    }
   }
-}
 
+  atm_union dispAtmData(){
+      sensors_event_t temp, pressure, humidity; // 36 byte data struct
+      ms8607.getEvent(&pressure, &temp, &humidity);
+      Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
+      Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
+      Serial.print("Humidity: ");Serial.print(humidity.relative_humidity); Serial.println(" %rH");
+      Serial.println("");
 
-// void setup() {
-//   // put your setup code here, to run once:
-//   Serial.begin(9600);
-//   gpsSerial.begin(GPSBaud);
-//   pinMode(BUILTIN_LED, OUTPUT);
-//   init3in1();
-//   Serial.println("Start up!");
+      atm_union atm_readings;
+      atm_readings.fl[0] = temp.temperature;
+      atm_readings.fl[1] = pressure.pressure;
+      atm_readings.fl[2] = humidity.relative_humidity;
+      return atm_readings;
+  }
 
-// }
+  gps_union GPS(){
+    gps_union gps_readings;
+    Serial.println("Attempting GPS");
+    while (gpsSerial.available() > 0){
+      if (gps.encode(gpsSerial.read())){
+        gps_readings = displayNMEAMessage();
+        break; // TODO: See if need to break here to avoid infinite loop
+      }
+      // If there are no characters coming in
+      // over the software serial port, show a "No GPS detected" error
+      if (gps.charsProcessed() < 10){
+        Serial.println("No GPS detected");
+        break;
+      }
+    }
 
-// void loop() {
-//   // put your main code here, to run repeatedly:
-//     // digitalWrite(BUILTIN_LED, HIGH);
-//     // Serial.println("Bright");
-//     // delay(1000);
-//     // digitalWrite(BUILTIN_LED, LOW);
-//     // Serial.println("Dark");
-//     // delay(1000);
-//   // This sketch displays information every time a new sentence is correctly encoded.
-//   GPS();
-//   //blinkLed();
+    return gps_readings;
+  }
 
-// }
+#endif

@@ -7,16 +7,7 @@
 #include <Adafruit_BusIO_Register.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_Sensor.h>
-
-union atm_union {
-    float fl[3]; // float size is 4 Bytes
-    uint8_t buf[12];
-};
-
-union gps_union {
-    double db[4]; // double size is 8 Bytes
-    uint8_t buf[32];
-};
+#include <data_structs.h>
 
 Adafruit_MS8607 ms8607; // 3in1 Sensor
 

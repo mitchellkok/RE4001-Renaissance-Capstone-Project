@@ -13,7 +13,7 @@ void setup() {
     Serial.begin(9600);
     pinMode(LED, OUTPUT);
     spi_setup();
-    buffer_setup(rx_union, tx_union, true);  
+    buffer_setup(&rx_union, &tx_union, true);  
 
     gpsSerial.begin(GPSBaud);
     init3in1();
@@ -30,18 +30,21 @@ void loop() {
         Serial.printf("SPI Slave Command Received: %d", command);Serial.println("");
         print_rxtx(rx_union, tx_union);  
 
-        buffer_setup(rx_union, tx_union, false);
+        buffer_setup(&rx_union, &tx_union, false);
         if (command == 0xAA) {
             // Trigger readings, prepare readings buffer
             // tx_union.buf[0] = 1;  // symbol to represent readings packet
             // tx_union.buf[2]++;    // counter to track trigger number
 
             Serial.println("\nReading 3 in 1");
-            atm_union atm_readings = dispAtmData();
-            for (int i = 0; i < 12; i++) {
-                tx_union.buf[i] = atm_readings.buf[i];  // load atm readings into buffer
-            }
-            GPS();
+            
+            // atm_union atm_readings = dispAtmData();
+            // for (int i = 0; i < 12; i++) {
+            //     tx_union.buf[i] = atm_readings.buf[i];  // load atm readings into buffer
+            // }
+
+            tx_union.readings.atm = dispAtmData();
+            tx_union.readings.gps = GPS();
             // Add in readings to send on 0xBB
         } else if (rx_union.buf[0] == 0xBB) {
             // READINGS HAVE ALREADY BEEN SENT IN SLAVE.WAIT
