@@ -14,13 +14,13 @@ ipaddress = "192.168.4.1"
 
 def begin_poll():
     print("Starting...")
-    url = ipaddress + '/events'
+    url = "http://" + ipaddress + '/events'
     requests.get(url, stream=True)
     messages = sseclient.SSEClient(url)
     cnt = 0
     with app.app_context():
         for msg in messages:
-            print(msg)
+            print(msg, cnt, "TRYING TURBO")
             cnt += 1
             turbo.push(turbo.replace(render_template('loadavg.html'), 'load'))
 
@@ -33,7 +33,8 @@ def hello():
     print("running")
     r = requests.get(url(ipaddress, "/getdata"))
     result_dict = json.loads(r.text)
-    return result_dict
+    print(result_dict)
+    return render_template('index.html')
 
 def url(address, tag=""):
     return "http://" + address + tag
@@ -41,7 +42,10 @@ def url(address, tag=""):
 @app.context_processor
 def inject_load():
     load = [int(random.random() * 100) / 100 for _ in range(3)]
+    print("INJECT", load)
     return {'load1': load[0], 'load5': load[1], 'load15': load[2]}
 
 
 # print(r.text)[:20÷0]
+if __name__ == "__main__":
+    app.run(debug=True)
