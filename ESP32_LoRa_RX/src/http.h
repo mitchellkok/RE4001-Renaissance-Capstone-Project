@@ -13,6 +13,17 @@ AsyncEventSource events("/events");
  
 StaticJsonDocument<500> jsonDocument;
 char buffer[500];
+
+void setup_http() {     
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Setting AP (Access Point)…");
+  // Remove the password parameter, if you want the AP (Access Point) to be open
+  WiFi.softAP(SSID);
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+} 
  
 void create_json(char *tag, float value) {  
   jsonDocument.clear();  
@@ -26,7 +37,7 @@ void add_json_object(char *tag, float value) {
   obj["type"] = tag;
   obj["value"] = value;
 }
- 
+
 char* getData(lora_union *rx) {
     Serial.println("###### getting data ######");
     jsonDocument.clear();
@@ -57,13 +68,9 @@ char* getData(lora_union *rx) {
     return buffer;
 }
 
-void setup_http() {     
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Setting AP (Access Point)…");
-  // Remove the password parameter, if you want the AP (Access Point) to be open
-  WiFi.softAP(SSID);
-
-  IPAddress IP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(IP);
-} 
+void sse_getData(lora_union *rx) {
+    char* buffer = getData(rx);
+    events.send(buffer,NULL,millis());
+    // events.send("ping",NULL,millis());
+}
+ 

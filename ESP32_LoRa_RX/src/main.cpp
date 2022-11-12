@@ -31,12 +31,6 @@ void setup()
 
   Serial.println("Setting up WiFi and HTTP");
   setup_http();
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("AP Accessed!!!");
-  });
-  server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", "TESTING TESTING");
-  });
   server.on("/getdata", HTTP_GET, [](AsyncWebServerRequest *request) {
     char* buffer = getData(&rx);
     request->send(200, "application/json", buffer);
@@ -99,7 +93,7 @@ void loop()
       Serial.println(sizeof(rx.buf));
       print_lora_union(rx); 
       Serial.println("Sending ping");
-      events.send("ping",NULL,millis());
+      sse_getData(&rx);
       
       // Send a reply
       uint8_t data[] = "And hello back to you";
