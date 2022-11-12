@@ -1,29 +1,47 @@
+import random
 import requests
 import json
-from flask import Flask, Response
+import sseclient
+import threading
+
+from flask import Flask, render_template
+from turbo_flask import Turbo
 
 app = Flask(__name__)
+turbo = Turbo(app)
+
+ipaddress = "192.168.4.1"
+
+def begin_poll():
+    print("Starting...")
+    url = ipaddress + '/events'
+    requests.get(url, stream=True)
+    messages = sseclient.SSEClient(url)
+    cnt = 0
+    with app.app_context():
+        for msg in messages:
+            print(msg)
+            cnt += 1
+            turbo.push(turbo.replace(render_template('loadavg.html'), 'load'))
+
+@app.before_first_request
+def before_first_request():
+    threading.Thread(target=begin_poll).start()
 
 @app.route('/')
 def hello():
     print("running")
-    r = requests.get(url("192.168.4.1", "/getdata"))
+    r = requests.get(url(ipaddress, "/getdata"))
     result_dict = json.loads(r.text)
     return result_dict
 
-# @app.route("/events")
-# def stream():
-#     def eventStream():
-#         while True:
-#             # Poll data from the database
-#             # and see if there's a new message
-#             if len(messages) > len(previous_messages):
-#                 yield "data: {}\n\n".format(messages[len(messages)-1)])"
-    
-#     return Response(eventStream(), mimetype="text/event-stream")
-
 def url(address, tag=""):
     return "http://" + address + tag
+
+@app.context_processor
+def inject_load():
+    load = [int(random.random() * 100) / 100 for _ in range(3)]
+    return {'load1': load[0], 'load5': load[1], 'load15': load[2]}
 
 
 # print(r.text)[:20÷0]

@@ -98,6 +98,7 @@ void loop()
       Serial.print("Received LEN = ");
       Serial.println(sizeof(rx.buf));
       print_lora_union(rx); 
+      Serial.println("Sending ping");
       events.send("ping",NULL,millis());
       
       // Send a reply
