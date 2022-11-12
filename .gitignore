@@ -1,4 +1,5 @@
 .vscode/
+.DS_Store
 
 # c build files (except .uf2 for flashing)
 *.obj
