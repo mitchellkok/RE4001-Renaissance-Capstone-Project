@@ -7,6 +7,10 @@ import threading
 from flask import Flask, render_template
 from turbo_flask import Turbo
 
+PRELOAD = False 
+# connect to internet and set preload to True if js fails offline
+# once loaded, set preload to False and reload
+
 app = Flask(__name__)
 turbo = Turbo(app)
 
@@ -26,14 +30,16 @@ def begin_poll():
 
 @app.before_first_request
 def before_first_request():
+    if PRELOAD: return
     threading.Thread(target=begin_poll).start()
 
 @app.route('/')
 def hello():
     print("running")
-    r = requests.get(url(ipaddress, "/getdata"))
-    result_dict = json.loads(r.text)
-    print(result_dict)
+    if not PRELOAD:
+        r = requests.get(url(ipaddress, "/getdata"))
+        result_dict = json.loads(r.text)
+        print(result_dict)
     return render_template('index.html')
 
 def url(address, tag=""):
@@ -48,4 +54,4 @@ def inject_load():
 
 # print(r.text)[:20÷0]
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8090, threaded=True)
