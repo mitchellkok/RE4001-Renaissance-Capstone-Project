@@ -5,26 +5,76 @@
     </table>
 </div> -->
 
-<style>
-  .column {
-  float: left;
-  width: 33.33%;
-  }
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Verdana, sans-serif;
+    }
 
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-</style>
-<div id="load" class="row">
-  <div class="column">
-    {{ load1 }}
+    .column {
+      background-color: #ffffff88;
+      border-radius: 1em;
+      float: left;
+      width: 33.333%;
+      height: 100%;
+      text-align: center;
+      padding: 1em;
+      margin: 0 1em;
+    }
+
+    .row {
+      height: 100%;
+      box-sizing: border-box;
+      padding: 3em;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .reading {
+      background-color: #445566;
+      color: #ff7d3d;
+      border-radius: 1em;
+      margin: 1em;
+      padding: 1em;
+    }
+
+      content: "";
+      display: table;
+      clear: both;
+      height: 100vh;
+    } */
+  </style>
+</head>
+<body style="background-color: #325064;">
+  <div id="load" class="row">
+    <div class="column">
+      <h1>Master 3 in 1</h1>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Temperature</h2>
+        <h2>{{ load1 }} °C</h2>
+      </div>
+    </div>
+    <div class="column">
+      <h1>Slave 3 in 1</h1>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Temperature</h2>
+        <h2>{{ load5 }} °C</h2>
+      </div>
+    </div>
+    <div class="column">
+      <h1>Other Sensors</h1>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Gravity SO2</h2>
+        <h2>{{ load15 }}  °C</h2>
+        <h2>{{ load15 }}  °C</h2>
+      </div>
+    </div>
   </div>
-  <div class="column">
-    {{ load5 }}
-  </div>
-  <div class="column">
-    {{ load15 }}
-  </div>
-</div>
+</body>
+</html>
