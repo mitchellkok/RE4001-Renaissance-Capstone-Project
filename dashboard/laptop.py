@@ -64,17 +64,17 @@ def inject_load():
             data[i] = "{:.2f}".format(data[i])
         print("INJECT", data)
     except Exception as e:
-        data = ["--", "--", "--"]
+        data = ["--" for i in range(10)]
     
     return {'m_t': data[0], 
             'm_p': data[1], 
             'm_h': data[2],
-            's_t': data[0], 
-            's_p': data[1], 
-            's_h': data[2],
-            'g_so2': data[0], 
-            'g_t': data[1], 
-            't_t': data[2]
+            's_t': data[3], 
+            's_p': data[4], 
+            's_h': data[5],
+            'g_so2': data[6], 
+            'g_t': data[7], 
+            't_t': data[8]
             }
 
 def http_resquest_json(addr):
