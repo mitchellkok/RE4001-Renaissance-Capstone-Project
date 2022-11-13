@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Turbo-Flask Streams Demo</title>
-    {{ turbo() }}
+    {{ turbo(url=url_for('static', filename='js/turbo.es2017-umd.js')) }}
   </head>
   <body>
     {% include "loadavg.html" %}

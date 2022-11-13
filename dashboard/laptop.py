@@ -24,7 +24,7 @@ def begin_poll():
     cnt = 0
     with app.app_context():
         for msg in messages:
-            print(msg, cnt, "TRYING TURBO")
+            print(msg, cnt)
             cnt += 1
             turbo.push(turbo.replace(render_template('loadavg.html'), 'load'))
 
