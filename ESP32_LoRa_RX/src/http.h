@@ -42,10 +42,6 @@ char* getData(lora_union *rx) {
     Serial.println("###### getting data ######");
     jsonDocument.clear();
 
-    // TODO: Change to this format
-    // jsonDocument["type"] = tag;
-    // jsonDocument["value"] = value;
-
     jsonDocument["date_year"] = rx->data_struct.datetime.datetime.year;
     jsonDocument["date_month"] = rx->data_struct.datetime.datetime.b[0];
     jsonDocument["date_day"] = rx->data_struct.datetime.datetime.b[1];
@@ -73,6 +69,5 @@ char* getData(lora_union *rx) {
 void sse_getData(lora_union *rx) {
     char* buffer = getData(rx);
     events.send(buffer,NULL,millis());
-    // events.send("ping",NULL,millis());
 }
  

@@ -2,7 +2,6 @@
 #include <SPI.h>
 #include <RH_RF95.h>
 #include <data_structs.h>
-// #include <mqtt.h>
 #include <http.h>
 
 /* ESP32 feather w/wing */
@@ -109,54 +108,3 @@ void loop()
   }
 }
 //*/
-
-// publish mqtt
-      // if (!client.connected()) {
-      //   Serial.println("Publishing MQTT...");
-      //   char str[80];
-
-      //   // datetime
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.year);client.publish("esp32/date_year", str);
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.b[0]);client.publish("esp32/date_month", str);
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.b[1]);client.publish("esp32/date_day", str);
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.b[2]);client.publish("esp32/date_hour", str);
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.b[3]);client.publish("esp32/date_min", str);
-      //   sprintf(str, "%u", rx.data_struct.datetime.datetime.b[4]);client.publish("esp32/date_sec", str);
-
-      //   // gravity SO2
-      //   sprintf(str, "%f", rx.data_struct.gravity_so2.fl[0]);client.publish("esp32/gravity_so2conc", str);
-      //   sprintf(str, "%f", rx.data_struct.gravity_so2.fl[1]);client.publish("esp32/gravity_so2temp", str);
-
-      //   // atm master
-      //   sprintf(str, "%f", rx.data_struct.atm_master.fl[0]);client.publish("esp32/atm_master_temp", str);
-      //   sprintf(str, "%f", rx.data_struct.atm_master.fl[1]);client.publish("esp32/atm_master_pressure", str);
-      //   sprintf(str, "%f", rx.data_struct.atm_master.fl[2]);client.publish("esp32/atm_master_humidity", str);
-        
-      //   // atm slave
-      //   sprintf(str, "%f", rx.data_struct.atm_slave.fl[0]);client.publish("esp32/atm_slave_temp", str);
-      //   sprintf(str, "%f", rx.data_struct.atm_slave.fl[1]);client.publish("esp32/atm_slave_pressure", str);
-      //   sprintf(str, "%f", rx.data_struct.atm_slave.fl[2]);client.publish("esp32/atm_slave_humidity", str);
-        
-      //   // gps
-      //   sprintf(str, "%u", rx.data_struct.gps_slave.readings.satellites);client.publish("esp32/gps_satellites", str);
-      //   sprintf(str, "%f", rx.data_struct.gps_slave.readings.lat);client.publish("esp32/gps_lat", str);
-      //   sprintf(str, "%f", rx.data_struct.gps_slave.readings.lng);client.publish("esp32/gps_lng", str);
-      //   sprintf(str, "%f", rx.data_struct.gps_slave.readings.meters);client.publish("esp32/gps_meters", str);
-      //   sprintf(str, "%f", rx.data_struct.gps_slave.readings.deg);client.publish("esp32/gps_deg", str);
-      //   sprintf(str, "%f", rx.data_struct.gps_slave.readings.mps);client.publish("esp32/gps_mps", str);
-      //   sprintf(str, "%u", rx.data_struct.gps_slave.readings.hdop);client.publish("esp32/gps_hdop", str);
-
-      //   // imu
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[0]);client.publish("esp32/imu_temp", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[1]);client.publish("esp32/imu_acc_x", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[2]);client.publish("esp32/imu_acc_y", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[3]);client.publish("esp32/imu_acc_z", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[4]);client.publish("esp32/imu_gyro_x", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[5]);client.publish("esp32/imu_gyro_y", str);
-      //   sprintf(str, "%f", rx.data_struct.imu.fl[6]);client.publish("esp32/imu_gyro_z", str);
-
-      //   // thermocouple
-      //   sprintf(str, "%f", rx.data_struct.thermocouple.fl[0]);client.publish("esp32/thermo_thermo", str);
-      //   sprintf(str, "%f", rx.data_struct.thermocouple.fl[1]);client.publish("esp32/thermo_ambient", str);
-      //   sprintf(str, "%f", rx.data_struct.thermocouple.fl[2]);client.publish("esp32/thermo_adc", str);
-      // } 
