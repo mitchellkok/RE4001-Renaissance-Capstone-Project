@@ -75,7 +75,7 @@ def inject_load():
         data = ["--" for i in range(10)]
     
     return {
-        'date_time' : data[9], #datetime,
+        'date_time': datetime,
         'm_t': data[0], 
         'm_p': data[1], 
         'm_h': data[2],

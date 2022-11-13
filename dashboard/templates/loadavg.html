@@ -40,48 +40,50 @@
   </style>
 </head>
 <body style="background-color: #325064;">
-  <h1 style="color: #FFFFFF;">{{ date_time }}</h1>
-  <div id="load" class="row">
-    <div class="column">
-      <h1>Master 3 in 1</h1>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h1>{{ m_t }} °C</h1>
+  <div id="load"> 
+    <h1 style="color: #FFFFFF;">{{ date_time }}</h1>
+    <div class="row">
+      <div class="column">
+        <h1>Master 3 in 1</h1>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Temperature</h2>
+          <h1>{{ m_t }} °C</h1>
+        </div>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Pressure</h2>
+          <h1>{{ m_p }} hPa</h1>
+        </div>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Humidity</h2>
+          <h1>{{ m_h }} %rH</h1>
+        </div>
       </div>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Pressure</h2>
-        <h1>{{ m_p }} hPa</h1>
+      <div class="column">
+        <h1>Slave 3 in 1</h1>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Temperature</h2>
+          <h1>{{ s_t }} °C</h1>
+        </div>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Pressure</h2>
+          <h1>{{ s_p }} hPa</h1>
+        </div>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Humidity</h2>
+          <h1>{{ s_h }} %rH</h1>
+        </div>
       </div>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Humidity</h2>
-        <h1>{{ m_h }} %rH</h1>
-      </div>
-    </div>
-    <div class="column">
-      <h1>Slave 3 in 1</h1>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h1>{{ s_t }} °C</h1>
-      </div>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Pressure</h2>
-        <h1>{{ s_p }} hPa</h1>
-      </div>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Humidity</h2>
-        <h1>{{ s_h }} %rH</h1>
-      </div>
-    </div>
-    <div class="column">
-      <h1>Other Sensors</h1>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Gravity SO2</h2>
-        <h1>{{ g_so2 }}  ppm</h1>
-        <h1>{{ g_t }}  °C</h1>
-      </div>
-      <div class="reading">
-        <h2 style="color: #DDDDDD;">Thermocouple</h2>
-        <h1>{{ t_t }}  °C</h1>
+      <div class="column">
+        <h1>Other Sensors</h1>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Gravity SO2</h2>
+          <h1>{{ g_so2 }}  ppm</h1>
+          <h1>{{ g_t }}  °C</h1>
+        </div>
+        <div class="reading">
+          <h2 style="color: #DDDDDD;">Thermocouple</h2>
+          <h1>{{ t_t }}  °C</h1>
+        </div>
       </div>
     </div>
   </div>
