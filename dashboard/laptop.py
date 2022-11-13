@@ -49,33 +49,42 @@ def hello():
 @app.context_processor
 def inject_load():
     try:
+        datetime = (
+            str(result_dict["date_day"]) + "/" 
+            + str(result_dict["date_month"]) + "/" 
+            + str(result_dict["date_year"]) + " "
+            + str(result_dict["date_hour"]) + ":"
+            + str(result_dict["date_min"]) + ":"
+            + str(result_dict["date_sec"])
+            )
         data = [
-                result_dict["atm_master_temp"],
-                result_dict["atm_master_pressure"],
-                result_dict["atm_master_humidity"],
-                result_dict["atm_slave_temp"],
-                result_dict["atm_slave_pressure"],
-                result_dict["atm_slave_humidity"],
-                result_dict["gravity_so2conc"],
-                result_dict["gravity_so2temp"],
-                result_dict["thermo_thermo"]
+                "{:.2f}".format(result_dict["atm_master_temp"]),
+                "{:.2f}".format(result_dict["atm_master_pressure"]),
+                "{:.2f}".format(result_dict["atm_master_humidity"]),
+                "{:.2f}".format(result_dict["atm_slave_temp"]),
+                "{:.2f}".format(result_dict["atm_slave_pressure"]),
+                "{:.2f}".format(result_dict["atm_slave_humidity"]),
+                "{:.2f}".format(result_dict["gravity_so2conc"]),
+                "{:.2f}".format(result_dict["gravity_so2temp"]),
+                "{:.2f}".format(result_dict["thermo_thermo"])
             ]
-        for i in range(len(data)):
-            data[i] = "{:.2f}".format(data[i])
         print("INJECT", data)
     except Exception as e:
+        datetime = "NO DATA"
         data = ["--" for i in range(10)]
     
-    return {'m_t': data[0], 
-            'm_p': data[1], 
-            'm_h': data[2],
-            's_t': data[3], 
-            's_p': data[4], 
-            's_h': data[5],
-            'g_so2': data[6], 
-            'g_t': data[7], 
-            't_t': data[8]
-            }
+    return {
+        'date_time' : datetime,
+        'm_t': data[0], 
+        'm_p': data[1], 
+        'm_h': data[2],
+        's_t': data[3], 
+        's_p': data[4], 
+        's_h': data[5],
+        'g_so2': data[6], 
+        'g_t': data[7], 
+        't_t': data[8]
+        }
 
 def http_resquest_json(addr):
     r = requests.get(url(addr, "/getdata"))
