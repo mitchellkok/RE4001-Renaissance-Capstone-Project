@@ -64,6 +64,8 @@ char* getData(lora_union *rx) {
     jsonDocument["atm_slave_pressure"] = rx->data_struct.atm_slave.fl[1];
     jsonDocument["atm_slave_humidity"] = rx->data_struct.atm_slave.fl[2];
 
+    jsonDocument["thermo_thermo"] = rx->data_struct.thermocouple.fl[0];
+
     serializeJson(jsonDocument, buffer);
     return buffer;
 }

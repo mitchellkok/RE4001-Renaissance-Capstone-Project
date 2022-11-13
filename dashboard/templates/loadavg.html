@@ -15,7 +15,7 @@
       border-radius: 1em;
       float: left;
       width: 33.333%;
-      height: 100%;
+      height: auto;
       text-align: center;
       padding: 1em;
       margin: 0 1em;
@@ -24,7 +24,7 @@
     .row {
       height: 100%;
       box-sizing: border-box;
-      padding: 3em;
+      padding: 2em;
       display: flex;
       flex-direction: row;
     }
@@ -33,8 +33,8 @@
       background-color: #445566;
       color: #ff7d3d;
       border-radius: 1em;
-      margin: 1em;
-      padding: 1em;
+      margin: 1em 0.5em;
+      padding: 0.5em;
     }
   </style>
 </head>
@@ -44,22 +44,42 @@
       <h1>Master 3 in 1</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h1>{{ load1 }} °C</h1>
+        <h1>{{ m_t }} °C</h1>
+      </div>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Pressure</h2>
+        <h1>{{ m_p }} °C</h1>
+      </div>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Humidity</h2>
+        <h1>{{ m_h }} °C</h1>
       </div>
     </div>
     <div class="column">
       <h1>Slave 3 in 1</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h1>{{ load5 }} °C</h1>
+        <h1>{{ s_t }} °C</h1>
+      </div>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Pressure</h2>
+        <h1>{{ s_p }} °C</h1>
+      </div>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Humidity</h2>
+        <h1>{{ s_h }} °C</h1>
       </div>
     </div>
     <div class="column">
       <h1>Other Sensors</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Gravity SO2</h2>
-        <h1>{{ load15 }}  °C</h1>
-        <h1>{{ load15 }}  °C</h1>
+        <h1>{{ g_s02 }}  ppm</h1>
+        <h1>{{ g_t }}  °C</h1>
+      </div>
+      <div class="reading">
+        <h2 style="color: #DDDDDD;">Thermocouple</h2>
+        <h1>{{ t_t }}  °C</h1>
       </div>
     </div>
   </div>

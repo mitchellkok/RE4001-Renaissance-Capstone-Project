@@ -1,4 +1,3 @@
-import random
 import requests
 import json
 import sseclient
@@ -50,14 +49,33 @@ def hello():
 @app.context_processor
 def inject_load():
     try:
-        data = [result_dict["atm_master_temp"],result_dict["atm_master_pressure"],result_dict["atm_master_humidity"]]
+        data = [
+                result_dict["atm_master_temp"],
+                result_dict["atm_master_pressure"],
+                result_dict["atm_master_humidity"],
+                result_dict["atm_slave_temp"],
+                result_dict["atm_slave_pressure"],
+                result_dict["atm_slave_humidity"],
+                result_dict["gravity_so2conc"],
+                result_dict["gravity_so2temp"],
+                result_dict["thermo_thermo"]
+            ]
         for i in range(len(data)):
             data[i] = "{:.2f}".format(data[i])
         print("INJECT", data)
     except Exception as e:
         data = ["--", "--", "--"]
     
-    return {'load1': data[0], 'load5': data[1], 'load15': data[2]}
+    return {'m_t': data[0], 
+            'm_p': data[1], 
+            'm_h': data[2],
+            's_t': data[0], 
+            's_p': data[1], 
+            's_h': data[2],
+            'g_so2': data[0], 
+            'g_t': data[1], 
+            't_t': data[2]
+            }
 
 def http_resquest_json(addr):
     r = requests.get(url(addr, "/getdata"))
