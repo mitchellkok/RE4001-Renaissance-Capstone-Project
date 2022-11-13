@@ -1,10 +1,3 @@
-<!-- <div id="load" class="load">
-    <table>
-      <tr><th></th><th>1 min</th><th>5 min</th><th>15 min</th></tr>
-      <tr><th>Load averages:</th><td>{{ load1 }}</td><td>{{ load5 }}</td><td>{{ load15 }}</td></tr>
-    </table>
-</div> -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,12 +36,6 @@
       margin: 1em;
       padding: 1em;
     }
-
-      content: "";
-      display: table;
-      clear: both;
-      height: 100vh;
-    } */
   </style>
 </head>
 <body style="background-color: #325064;">
@@ -57,22 +44,22 @@
       <h1>Master 3 in 1</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h2>{{ load1 }} °C</h2>
+        <h1>{{ load1 }} °C</h1>
       </div>
     </div>
     <div class="column">
       <h1>Slave 3 in 1</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Temperature</h2>
-        <h2>{{ load5 }} °C</h2>
+        <h1>{{ load5 }} °C</h1>
       </div>
     </div>
     <div class="column">
       <h1>Other Sensors</h1>
       <div class="reading">
         <h2 style="color: #DDDDDD;">Gravity SO2</h2>
-        <h2>{{ load15 }}  °C</h2>
-        <h2>{{ load15 }}  °C</h2>
+        <h1>{{ load15 }}  °C</h1>
+        <h1>{{ load15 }}  °C</h1>
       </div>
     </div>
   </div>

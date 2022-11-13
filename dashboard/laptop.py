@@ -51,6 +51,8 @@ def hello():
 def inject_load():
     try:
         data = [result_dict["atm_master_temp"],result_dict["atm_master_pressure"],result_dict["atm_master_humidity"]]
+        for i in range(len(data)):
+            data[i] = "{:.2f}".format(data[i])
         print("INJECT", data)
     except Exception as e:
         data = ["--", "--", "--"]
