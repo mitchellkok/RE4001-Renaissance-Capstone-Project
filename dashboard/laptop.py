@@ -50,12 +50,12 @@ def hello():
 def inject_load():
     try:
         datetime = (
-            str(result_dict["date_day"]) + "/" 
-            + str(result_dict["date_month"]) + "/" 
-            + str(result_dict["date_year"]) + " "
-            + str(result_dict["date_hour"]) + ":"
-            + str(result_dict["date_min"]) + ":"
-            + str(result_dict["date_sec"])
+            str(result_dict["date_day"]).zfill(2) + "/" 
+            + str(result_dict["date_month"]).zfill(2) + "/" 
+            + str(result_dict["date_year"]).zfill(2) + " "
+            + str(result_dict["date_hour"]).zfill(2) + ":"
+            + str(result_dict["date_min"]).zfill(2) + ":"
+            + str(result_dict["date_sec"]).zfill(2)
             )
         data = [
                 "{:.2f}".format(result_dict["atm_master_temp"]),
@@ -66,7 +66,8 @@ def inject_load():
                 "{:.2f}".format(result_dict["atm_slave_humidity"]),
                 "{:.2f}".format(result_dict["gravity_so2conc"]),
                 "{:.2f}".format(result_dict["gravity_so2temp"]),
-                "{:.2f}".format(result_dict["thermo_thermo"])
+                "{:.2f}".format(result_dict["thermo_thermo"]),
+                datetime
             ]
         print("INJECT", data)
     except Exception as e:
@@ -74,7 +75,7 @@ def inject_load():
         data = ["--" for i in range(10)]
     
     return {
-        'date_time' : datetime,
+        'date_time' : data[9], #datetime,
         'm_t': data[0], 
         'm_p': data[1], 
         'm_h': data[2],
