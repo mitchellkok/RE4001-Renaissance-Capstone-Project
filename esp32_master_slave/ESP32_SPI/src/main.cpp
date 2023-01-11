@@ -4,6 +4,7 @@
 #include <atm.h>
 #include <imu_thermo.h>
 #include <gravity_so2.h>
+#include <china_so2.h>
 #include <lora_tx.h>
 #include <sd_rtc.h>
 #include <data_structs.h>
@@ -22,6 +23,7 @@ void setup (void)
 
   init3in1();
   gravity_so2_setup();
+  china_so2_setup();
   imu_thermo_setup();
   lora_setup();
 
@@ -35,6 +37,7 @@ void loop(void)
   thermo_union thermo_readings = thermo();
   atm_union atm_master = dispAtmData();
   gravity_so2_union gravity_so2_readings = gravity_so2();
+  china_so2_reading();
 
   cli();
   trigger_cmd[1]++; // counter to track trigger number
