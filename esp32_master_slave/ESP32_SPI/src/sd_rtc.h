@@ -26,6 +26,7 @@
 #include <data_structs.h>
 
 #define LED 12
+#define RTC_CS  13
 
 // Initialize RTC
 RTC_PCF8523 rtc;
@@ -102,7 +103,7 @@ void sd_rtc_setup() {
   // Define CS pin in SD.begin function
 
   uint8_t count = 0;
-  while (!SD.begin(2)) {  // pin 2 cs
+  while (!SD.begin(RTC_CS)) {  // pin 13 cs
     if (count++ == 10) {
       Serial.println("SD Card initialization failed! Moving on...");
       break;
