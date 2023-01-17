@@ -46,6 +46,7 @@ void init3in1(){
 atm_union dispAtmData(){
     sensors_event_t temp, pressure, humidity; // 36 byte data struct
     ms8607.getEvent(&pressure, &temp, &humidity);
+    Serial.println("Master 3 in 1 readings: ");
     Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
     Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
     Serial.print("Humidity: ");Serial.print(humidity.relative_humidity); Serial.println(" %rH");

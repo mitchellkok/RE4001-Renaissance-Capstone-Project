@@ -9,9 +9,10 @@ void china_so2_setup() {
 }
 
 float china_so2_reading() {
-  const unsigned char message[1] = {0xD1};
-  const unsigned char commandFive[9] = {0XFF, 01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
+  // const unsigned char message[1] = {0xD1};
   // SerialPort.write(message, 1);
+
+  const unsigned char commandFive[9] = {0XFF, 01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
   SerialPort.write(commandFive, 9);
 
   // Read each of the 9 bytes

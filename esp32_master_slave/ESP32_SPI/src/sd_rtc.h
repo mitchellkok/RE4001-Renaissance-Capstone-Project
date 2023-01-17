@@ -112,7 +112,7 @@ void sd_rtc_setup() {
     delay(1000);
   }
   Serial.println("SD Card initialization done.");
-  digitalWrite(LED, LOW); // Turn the LED on
+  // digitalWrite(LED, LOW); // Turn the LED off
 
   Serial.println("Initializing RTC...");
   if (!rtc.begin()) {
@@ -139,7 +139,7 @@ void sd_rtc_setup() {
   float deviation_ppm = (drift / period_sec * 1000000); //  deviation in parts per million (μs)
   float drift_unit = 4.34; // use with offset mode PCF8523_TwoHours
   // float drift_unit = 4.069; //For corrections every min the drift_unit is 4.069 ppm (use with offset mode PCF8523_OneMinute)
-  int offset = round(deviation_ppm / drift_unit);
+  // int offset = round(deviation_ppm / drift_unit);
   // rtc.calibrate(PCF8523_TwoHours, offset); // Un-comment to perform calibration once drift (seconds) and observation period (seconds) are correct
   // rtc.calibrate(PCF8523_TwoHours, 0); // Un-comment to cancel previous calibrations
 

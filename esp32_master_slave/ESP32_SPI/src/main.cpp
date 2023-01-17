@@ -10,6 +10,7 @@
 #include <data_structs.h>
 
 #define STARTBYTE 0xAA
+#define G_LED 4
 #define I2C_SDA 21
 #define I2C_SCL 22
 
@@ -18,6 +19,8 @@ data_union rx_union;
 
 void setup (void)
 {
+  pinMode(G_LED, OUTPUT); // Declare the LED as an output
+  digitalWrite(G_LED, HIGH); // Turn the LED on
   Serial.begin(9600);
   Wire.begin(I2C_SDA, I2C_SCL);
 
@@ -32,7 +35,8 @@ void setup (void)
   imu_thermo_setup();
   lora_setup();
 
-  Serial.println("Ready\n");             
+  Serial.println("Master Ready\n");       
+  digitalWrite(G_LED, LOW); // Turn the LED off      
 }
 
 void loop(void)
@@ -75,7 +79,7 @@ void loop(void)
   Serial.println("Slave CO2 Readings:");
   Serial.print(co2_slave);Serial.println(" PPM");
   // TODO: read, check checksum (IF MISMATCH, request immediately)
-  sei();
+  sei(); // resume interrupts
 
   // LoRa
   Serial.println("");
