@@ -295,7 +295,7 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     if (len > RH_RF95_MAX_MESSAGE_LEN)
 	return false;
 
-    waitPacketSent(); // Make sure we dont interrupt an outgoing message
+    waitPacketSent(2000); // Make sure we dont interrupt an outgoing message // MODIFIED: 2000ms timeout
     setModeIdle();
 
     if (!waitCAD())

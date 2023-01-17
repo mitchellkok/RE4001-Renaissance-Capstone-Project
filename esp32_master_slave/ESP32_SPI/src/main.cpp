@@ -5,11 +5,14 @@
 #include <imu_thermo.h>
 #include <gravity_so2.h>
 #include <china_so2.h>
+// #include <co2.h>
 #include <lora_tx.h>
 #include <sd_rtc.h>
 #include <data_structs.h>
 
-# define STARTBYTE 0xAA
+#define STARTBYTE 0xAA
+#define I2C_SDA 21
+#define I2C_SCL 22
 
 data_union tx_union;
 data_union rx_union;
@@ -17,6 +20,8 @@ data_union rx_union;
 void setup (void)
 {
   Serial.begin(9600);
+  Wire.begin(I2C_SDA, I2C_SCL);
+
   spi_setup();
   buffer_setup(&rx_union, &tx_union, true);  
   sd_rtc_setup();
@@ -24,6 +29,8 @@ void setup (void)
   init3in1();
   gravity_so2_setup();
   china_so2_setup();
+  // co2_setup();
+
   imu_thermo_setup();
   lora_setup();
 
@@ -38,15 +45,16 @@ void loop(void)
   atm_union atm_master = dispAtmData();
   gravity_so2_union gravity_so2_readings = gravity_so2();
   china_so2_reading();
+  // co2_reading();
 
   cli();
   trigger_cmd[1]++; // counter to track trigger number
-  Serial.println("");Serial.printf("SPI Master Command Sent: %d", trigger_cmd[0]);Serial.println("");
+  Serial.println("");Serial.printf("SPI Master Command Sent: 0x%x (%d)", trigger_cmd[0], trigger_cmd[0]);Serial.println("");
   spi_rxtx(trigger_cmd, &rx_union, &tx_union); // Send command to trigger readings (Command == 0xAA)
   delay(READINGS_DELAY_MS); // delay 2000ms to wait for slave to take readings
 
   request_cmd[1] = trigger_cmd[1];
-  Serial.printf("SPI Master Command Sent: %d", request_cmd[0]);Serial.println("");
+  Serial.printf("SPI Master Command Sent: 0x%x (%d)", request_cmd[0], request_cmd[0]);Serial.println("");
   spi_rxtx(request_cmd, &rx_union, &tx_union); // Send command to request readings (Command == 0xBB)
 
   atm_union atm_slave = rx_union.readings.atm;

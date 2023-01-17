@@ -5,6 +5,7 @@ unsigned char output[9] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
 void china_so2_setup() {
   SerialPort.begin(9600, SERIAL_8N1, 16, 17);
+  Serial.println("CHINA SO2 setup done!");
 }
 
 void china_so2_reading() {

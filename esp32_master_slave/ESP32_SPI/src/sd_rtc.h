@@ -114,6 +114,7 @@ void sd_rtc_setup() {
   Serial.println("SD Card initialization done.");
   digitalWrite(LED, LOW); // Turn the LED on
 
+  Serial.println("Initializing RTC...");
   if (!rtc.begin()) {
       Serial.println("Couldn't find RTC");
       Serial.flush();

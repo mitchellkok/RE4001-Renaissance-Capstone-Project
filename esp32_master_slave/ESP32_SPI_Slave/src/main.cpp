@@ -2,6 +2,7 @@
 
 #include <spi_slave.h>
 #include <gps_atm.h>
+#include <co2.h>
 
 #define LED 2
 
@@ -17,6 +18,7 @@ void setup() {
 
     gpsSerial.begin(GPSBaud);
     init3in1();
+    // CO2 SENSOR: NO SETUP NEEDED
 
     Serial.println("Slave Ready");
 }
@@ -27,7 +29,7 @@ void loop() {
     digitalWrite(LED, true);
     while (slave.available()) {
         uint8_t command = rx_union.buf[0];
-        Serial.printf("SPI Slave Command Received: %d", command);Serial.println("");
+        Serial.printf("SPI Slave Command Received: 0x%x (%d)", command, command);Serial.println("");
         print_rxtx(rx_union, tx_union);  
 
         buffer_setup(&rx_union, &tx_union, false);
@@ -35,6 +37,8 @@ void loop() {
             Serial.println("\nReading 3 in 1");
             tx_union.readings.atm = dispAtmData();
             tx_union.readings.gps = GPS();
+
+            co2_reading();
         } else if (rx_union.buf[0] == 0xBB) {
             // READINGS HAVE ALREADY BEEN SENT IN SLAVE.WAIT
             tx_union.buf[0] = 255; // load in ACK symbol to send on 0xAA
