@@ -57,6 +57,7 @@
         gps_union gps_slave;
         imu_union imu;
         thermo_union thermocouple;
+        float china_so2;
         int co2;
         // TODO: add Batt voltage
         } data_struct;
@@ -75,6 +76,8 @@
         Serial.println("gravity so2:");
         Serial.print("   "); Serial.println(rx.data_struct.gravity_so2.fl[0]);
         Serial.print("   "); Serial.println(rx.data_struct.gravity_so2.fl[1]);
+        Serial.println("china so2:");
+        Serial.print("   "); Serial.println(rx.data_struct.china_so2);
         Serial.println("atm master:");
         Serial.print("   "); Serial.println(rx.data_struct.atm_master.fl[0]);
         Serial.print("   "); Serial.println(rx.data_struct.atm_master.fl[1]);

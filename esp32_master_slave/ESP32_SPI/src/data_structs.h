@@ -65,6 +65,7 @@
         gps_union gps_slave;
         imu_union imu;
         thermo_union thermocouple;
+        float china_so2;
         int co2;
         // TODO: add Batt voltage
         } data_struct;

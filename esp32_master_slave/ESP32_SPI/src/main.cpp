@@ -42,7 +42,7 @@ void loop(void)
   thermo_union thermo_readings = thermo();
   atm_union atm_master = dispAtmData();
   gravity_so2_union gravity_so2_readings = gravity_so2();
-  china_so2_reading();
+  float china_so2 = china_so2_reading();
 
   cli();  // stop interrupts
   trigger_cmd[1]++; // counter to track trigger number
@@ -88,6 +88,7 @@ void loop(void)
   tx.data_struct.gps_slave = gps_slave;
   tx.data_struct.imu = imu_readings;
   tx.data_struct.thermocouple = thermo_readings;
+  tx.data_struct.china_so2 = china_so2;
   tx.data_struct.co2 = co2_slave;
   lora(tx.buf);
   

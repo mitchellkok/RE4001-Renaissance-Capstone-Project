@@ -8,7 +8,7 @@ void china_so2_setup() {
   Serial.println("CHINA SO2 setup done!");
 }
 
-void china_so2_reading() {
+float china_so2_reading() {
   const unsigned char message[1] = {0xD1};
   const unsigned char commandFive[9] = {0XFF, 01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
   // SerialPort.write(message, 1);
@@ -27,6 +27,6 @@ void china_so2_reading() {
     float gasValue = (float)((output[6] * 256 + output[7])) / 100;
     Serial.println(gasValue);
     Serial.println("");
-    delay(1000);
+    return gasValue;
   }  
 }
