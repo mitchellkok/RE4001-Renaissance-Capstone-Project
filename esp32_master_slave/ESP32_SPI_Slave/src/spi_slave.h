@@ -11,6 +11,7 @@ union data_union {
     struct readings {
       atm_union atm;
       gps_union gps;
+      int co2;
     } readings;
     char s[BUF_LEN];
     uint8_t buf[BUF_LEN];

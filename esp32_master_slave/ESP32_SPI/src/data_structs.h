@@ -22,17 +22,18 @@
 
     union gps_union {
         struct readings {
-        uint32_t satellites;
-        uint32_t hdop;
-        double lat;
-        double lng;
-        double meters;
-        double deg;
-        double mps;
-        double value;
+            uint32_t satellites;
+            uint32_t hdop;
+            float lat;
+            float lng;
+            float meters;
+            float deg;
+            float mps;
+            float value;
         } readings;
-        uint8_t buf[56];
+        uint8_t buf[32];
     };
+
 
     union thermo_union {
         float fl[3]; // float size is 4 Bytes, or uin32_t
@@ -46,11 +47,12 @@
 
     union data_union {  // SPI
         struct readings {
-        atm_union atm;
-        gps_union gps;
+            atm_union atm;
+            gps_union gps;
+            int co2;
         } readings;
-        char s[68]; // update this!
-        uint8_t buf[68];
+        char s[64]; // 64 bytes is maximum buffer length for SPI library
+        uint8_t buf[64];
     };
 
     union lora_union {
@@ -63,6 +65,7 @@
         gps_union gps_slave;
         imu_union imu;
         thermo_union thermocouple;
+        int co2;
         // TODO: add Batt voltage
         } data_struct;
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes

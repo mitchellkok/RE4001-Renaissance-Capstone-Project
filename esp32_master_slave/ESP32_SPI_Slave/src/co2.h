@@ -62,7 +62,7 @@ int readCO2()
   }
 }
 
-void co2_reading() {
+int co2_reading() {
   int co2Value = readCO2();
   if (co2Value > 0) {
     Serial.print("CO2 Value: ");
@@ -71,5 +71,6 @@ void co2_reading() {
     Serial.println("CO2 Checksum failed / Communication failure");
   }
   Serial.println("");
+  return co2Value;
 }
 

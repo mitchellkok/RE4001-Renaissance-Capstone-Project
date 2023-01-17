@@ -21,15 +21,16 @@
         struct readings {
         uint32_t satellites;
         uint32_t hdop;
-        double lat;
-        double lng;
-        double meters;
-        double deg;
-        double mps;
-        double value;
+        float lat;
+        float lng;
+        float meters;
+        float deg;
+        float mps;
+        float value;
         } readings;
-        uint8_t buf[56];
+        uint8_t buf[32];
     };
+
 
     union thermo_union {
         float fl[3]; // float size is 4 Bytes, or uin32_t
@@ -56,6 +57,7 @@
         gps_union gps_slave;
         imu_union imu;
         thermo_union thermocouple;
+        int co2;
         // TODO: add Batt voltage
         } data_struct;
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes
@@ -89,6 +91,8 @@
         Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.deg);
         Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.mps);
         Serial.print("   "); Serial.println(rx.data_struct.gps_slave.readings.hdop);
+        Serial.println("co2 slave:");
+        Serial.print("   "); Serial.println(rx.data_struct.co2);
         Serial.println("imu:");
         Serial.print("   "); Serial.println(rx.data_struct.imu.fl[0]);
         Serial.print("   "); Serial.println(rx.data_struct.imu.fl[1]);

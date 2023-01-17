@@ -12,7 +12,6 @@
 
 #ifndef GPS_ATM
   #define GPS_ATM
-  // Pins
   #define RXPin 16
   #define TXPin 17
 
@@ -21,18 +20,32 @@
       uint8_t buf[12];
   };
 
+  // union gps_union {
+  //     struct readings {
+  //       uint32_t satellites;
+  //       uint32_t hdop;
+  //       double lat;
+  //       double lng;
+  //       double meters;
+  //       double deg;
+  //       double mps;
+  //       double value;
+  //     } readings;
+  //     uint8_t buf[56];
+  // };
+
   union gps_union {
-      struct readings {
-        uint32_t satellites;
-        uint32_t hdop;
-        double lat;
-        double lng;
-        double meters;
-        double deg;
-        double mps;
-        double value;
-      } readings;
-      uint8_t buf[56];
+    struct readings {
+      uint32_t satellites;
+      uint32_t hdop;
+      float lat;
+      float lng;
+      float meters;
+      float deg;
+      float mps;
+      float value;
+    } readings;
+    uint8_t buf[32];
   };
 
 
@@ -120,30 +133,21 @@
     Serial.println();
 
     gps_union gps_readings;
-    gps_readings.readings.satellites = gps.satellites.value();
-    gps_readings.readings.lat = gps.location.lat();
-    gps_readings.readings.lng = gps.location.lng();
-    gps_readings.readings.meters = gps.altitude.meters();
-    gps_readings.readings.deg = gps.course.deg();
-    gps_readings.readings.mps = gps.speed.mps();
-    gps_readings.readings.hdop = gps.hdop.value();
+    gps_readings.readings.satellites =  (float) gps.satellites.value();
+    gps_readings.readings.lat =         (float) gps.location.lat();
+    gps_readings.readings.lng =         (float) gps.location.lng();
+    gps_readings.readings.meters =      (float) gps.altitude.meters();
+    gps_readings.readings.deg =         (float) gps.course.deg();
+    gps_readings.readings.mps =         (float) gps.speed.mps();
+    gps_readings.readings.hdop =        (float) gps.hdop.value();
     return gps_readings;
   }
 
   void init3in1(){
-      if(!ms8607.begin()){
+    if(!ms8607.begin()){
       Serial.println("Failed to find MS8607 chip!");
-      // while(true){
-      //   Serial.println("Failed to find MS8607 chip!");
-      // };
       delay(1000);
-      if(!ms8607.begin()){
-        Serial.println("Failed to find MS8607 chip again!");
-        // while(true){
-        //   Serial.println("Cannot start chip");
-        //   delay(500);
-        // }
-      }
+      if(!ms8607.begin()) Serial.println("Failed to find MS8607 chip again!");
     } else {
       Serial.println("MS8607 initialised!");
     }

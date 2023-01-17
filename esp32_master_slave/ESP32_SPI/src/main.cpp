@@ -5,7 +5,6 @@
 #include <imu_thermo.h>
 #include <gravity_so2.h>
 #include <china_so2.h>
-// #include <co2.h>
 #include <lora_tx.h>
 #include <sd_rtc.h>
 #include <data_structs.h>
@@ -29,7 +28,6 @@ void setup (void)
   init3in1();
   gravity_so2_setup();
   china_so2_setup();
-  // co2_setup();
 
   imu_thermo_setup();
   lora_setup();
@@ -45,9 +43,8 @@ void loop(void)
   atm_union atm_master = dispAtmData();
   gravity_so2_union gravity_so2_readings = gravity_so2();
   china_so2_reading();
-  // co2_reading();
 
-  cli();
+  cli();  // stop interrupts
   trigger_cmd[1]++; // counter to track trigger number
   Serial.println("");Serial.printf("SPI Master Command Sent: 0x%x (%d)", trigger_cmd[0], trigger_cmd[0]);Serial.println("");
   spi_rxtx(trigger_cmd, &rx_union, &tx_union); // Send command to trigger readings (Command == 0xAA)
@@ -59,6 +56,7 @@ void loop(void)
 
   atm_union atm_slave = rx_union.readings.atm;
   gps_union gps_slave = rx_union.readings.gps;
+  int co2_slave = rx_union.readings.co2;
   
   Serial.println("Slave 3 in 1 Readings:");
   Serial.printf("Temperature: %f", atm_slave.fl[0]);Serial.println("");
@@ -73,6 +71,9 @@ void loop(void)
   Serial.printf("Degrees: %f", gps_slave.readings.deg);Serial.println("");
   Serial.printf("MPS: %f", gps_slave.readings.mps);Serial.println("");
   Serial.printf("HDOP: %d", gps_slave.readings.hdop);Serial.println("");
+  Serial.println("");
+  Serial.println("Slave CO2 Readings:");
+  Serial.print(co2_slave);Serial.println(" PPM");
   // TODO: read, check checksum (IF MISMATCH, request immediately)
   sei();
 
@@ -87,6 +88,7 @@ void loop(void)
   tx.data_struct.gps_slave = gps_slave;
   tx.data_struct.imu = imu_readings;
   tx.data_struct.thermocouple = thermo_readings;
+  tx.data_struct.co2 = co2_slave;
   lora(tx.buf);
   
   Serial.println("");
