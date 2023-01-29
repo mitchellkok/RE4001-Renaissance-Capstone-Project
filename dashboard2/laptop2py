@@ -1,0 +1,123 @@
+import requests
+import json
+import sseclient
+import random
+import time
+from flask import Flask
+from flask_socketio import SocketIO
+from flask_cors import CORS
+import eventlet
+eventlet.monkey_patch()
+
+PRELOAD = False # Not needed anymore; keep just in case
+# connect to internet and set preload to True if js fails offline
+# once loaded, set preload to False and reload
+TESTING = True # Toggle for test mode
+
+app = Flask(__name__)
+CORS(app,resources={r"/*":{"origins":"*"}})
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+ipaddress = "192.168.4.1"
+result_dict = {}
+datetime = ""
+data = []
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+def testing():
+    global datetime, data
+    while True:
+        datetime = "NO DATA " + str(random.randint(0,9999))
+        data = [str(random.randint(0,9999)) for i in range(10)]
+        json_file = get_data()
+        print("DATA: ", json_file)
+        socketio.emit('data', json_file) # send the data back to the client
+        time.sleep(5)
+    
+def begin_poll():
+    global result_dict
+    print("Starting...")
+    url = "http://" + ipaddress + '/events'
+    requests.get(url, stream=True)
+    messages = sseclient.SSEClient(url)
+    cnt = 0
+    with app.app_context():
+        for msg in messages:
+            try:
+                result_dict = json.loads(msg.data)
+                print(cnt, result_dict)
+            except:
+                print("Could not parse JSON:", msg.data)
+            cnt += 1           
+    
+@app.route('/data')
+def get_data():
+    global datetime, data
+    return {
+        'date_time': datetime,
+        'm_t': data[0], 
+        'm_p': data[1], 
+        'm_h': data[2],
+        's_t': data[3], 
+        's_p': data[4], 
+        's_h': data[5],
+        'g_so2': data[6], 
+        'g_t': data[7], 
+        't_t': data[8]
+        }
+
+
+@app.context_processor
+def inject_load():
+    try:
+        datetime = (
+            str(result_dict["date_day"]).zfill(2) + "/" 
+            + str(result_dict["date_month"]).zfill(2) + "/" 
+            + str(result_dict["date_year"]).zfill(2) + " "
+            + str(result_dict["date_hour"]).zfill(2) + ":"
+            + str(result_dict["date_min"]).zfill(2) + ":"
+            + str(result_dict["date_sec"]).zfill(2)
+            )
+        data = [
+            "{:.2f}".format(result_dict["atm_master_temp"]),
+            "{:.2f}".format(result_dict["atm_master_pressure"]),
+            "{:.2f}".format(result_dict["atm_master_humidity"]),
+            "{:.2f}".format(result_dict["atm_slave_temp"]),
+            "{:.2f}".format(result_dict["atm_slave_pressure"]),
+            "{:.2f}".format(result_dict["atm_slave_humidity"]),
+            "{:.2f}".format(result_dict["gravity_so2conc"]),
+            "{:.2f}".format(result_dict["gravity_so2temp"]),
+            "{:.2f}".format(result_dict["thermo_thermo"]),
+            datetime
+            ]
+        print("INJECT", data)
+    except Exception as e:
+        datetime = "NO DATA"
+        data = ["--" for i in range(10)]
+    
+    return {
+        'date_time': datetime,
+        'm_t': data[0], 
+        'm_p': data[1], 
+        'm_h': data[2],
+        's_t': data[3], 
+        's_p': data[4], 
+        's_h': data[5],
+        'g_so2': data[6], 
+        'g_t': data[7], 
+        't_t': data[8]
+        }
+
+def http_resquest_json(addr):
+    r = requests.get("http://" + addr + "/getdata")
+    result_dict = json.loads(r.text)
+    print(result_dict)
+    return result_dict
+
+if not TESTING: eventlet.spawn(begin_poll)
+else: eventlet.spawn(testing)
+if __name__ == "__main__":
+    socketio.run(app, debug=True, port=8090)
