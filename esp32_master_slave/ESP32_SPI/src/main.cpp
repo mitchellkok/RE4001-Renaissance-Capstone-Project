@@ -8,6 +8,7 @@
 #include <lora_tx.h>
 #include <sd_rtc.h>
 #include <data_structs.h>
+#include <batt.h>
 
 #define STARTBYTE 0xAA
 #define G_LED 4
@@ -41,6 +42,8 @@ void setup (void)
 
 void loop(void)
 {
+  float batt_voltage = get_battery_voltage();
+  float batt_percent = get_battery_percent(batt_voltage);
   datetime_union datetime = get_datetime();
   imu_union imu_readings = imu();
   thermo_union thermo_readings = thermo();

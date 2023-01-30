@@ -3,6 +3,7 @@
 #include <spi_slave.h>
 #include <gps_atm.h>
 #include <co2.h>
+#include <batt.h>
 
 #define LED 2
 
@@ -38,6 +39,8 @@ void loop() {
             tx_union.readings.atm = dispAtmData();
             tx_union.readings.gps = GPS();
             tx_union.readings.co2 = co2_reading();
+            float batt_voltage = get_battery_voltage();
+            float batt_percent = get_battery_percent(batt_voltage);
         } else if (rx_union.buf[0] == 0xBB) {
             // READINGS HAVE ALREADY BEEN SENT IN SLAVE.WAIT
             tx_union.buf[0] = 255; // load in ACK symbol to send on 0xAA
