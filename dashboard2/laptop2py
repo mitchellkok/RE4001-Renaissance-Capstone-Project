@@ -1,13 +1,15 @@
 import requests
 import json
+import pandas as pd
 import sseclient
-import random
 import time
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
 import eventlet
 eventlet.monkey_patch()
+
+# TODO: Add in IMU
 
 PRELOAD = False # Not needed anymore; keep just in case
 # connect to internet and set preload to True if js fails offline
@@ -20,22 +22,24 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 ipaddress = "192.168.4.1"
 result_dict = {}
-datetime = ""
-data = []
+datetime = 0
+data = [] 
+df = pd.DataFrame() # global dataframe to store data
 
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
 
 def testing():
-    global datetime, data
+    global datetime, data, df
     while True:
-        datetime = "NO DATA " + str(random.randint(0,9999))
-        data = [str(random.randint(0,9999)) for i in range(10)]
-        json_file = get_data()
-        print("DATA: ", json_file)
-        socketio.emit('data', json_file) # send the data back to the client
-        time.sleep(5)
+        datetime +=1
+        data = [datetime*(datetime%2) for i in range(27)]
+        json_dict = get_data()
+        print("DATA: ", datetime, json_dict)
+        socketio.emit('data', json_dict) # send the data back to the client
+        df = pd.concat([df, pd.DataFrame.from_records([json_dict])]) 
+        eventlet.sleep(5)
     
 def begin_poll():
     global result_dict
@@ -66,9 +70,26 @@ def get_data():
         's_h': data[5],
         'g_so2': data[6], 
         'g_t': data[7], 
-        't_t': data[8]
+        't_t': data[8],
+        'e_so2': data[9],
+        'co2': data[10],
+        'rssi': data[11],
+        'gps_sat': data[12],
+        'gps_hdop': data[13],
+        'gps_lat': data[14],
+        'gps_lng': data[15],
+        'gps_alt': data[16],
+        'gps_deg': data[17],
+        'gps_mps': data[18],
+        'gps_val': data[19],
+        'imu_tmp': data[20],
+        'imu_acx': data[21],
+        'imu_acy': data[22],
+        'imu_acz': data[23],
+        'imu_gyx': data[24],
+        'imu_gyy': data[25],
+        'imu_gyz': data[26]
         }
-
 
 @app.context_processor
 def inject_load():
@@ -91,12 +112,13 @@ def inject_load():
             "{:.2f}".format(result_dict["gravity_so2conc"]),
             "{:.2f}".format(result_dict["gravity_so2temp"]),
             "{:.2f}".format(result_dict["thermo_thermo"]),
-            datetime
+            "",
+            "",
             ]
         print("INJECT", data)
     except Exception as e:
         datetime = "NO DATA"
-        data = ["--" for i in range(10)]
+        data = ["--" for i in range(27)]
     
     return {
         'date_time': datetime,
@@ -108,7 +130,25 @@ def inject_load():
         's_h': data[5],
         'g_so2': data[6], 
         'g_t': data[7], 
-        't_t': data[8]
+        't_t': data[8],
+        'e_so2': data[9],
+        'co2': data[10],
+        'rssi': data[11],
+        'gps_sat': data[12],
+        'gps_hdop': data[13],
+        'gps_lat': data[14],
+        'gps_lng': data[15],
+        'gps_alt': data[16],
+        'gps_deg': data[17],
+        'gps_mps': data[18],
+        'gps_val': data[19],
+        'imu_tmp': data[20],
+        'imu_acx': data[21],
+        'imu_acy': data[22],
+        'imu_acz': data[23],
+        'imu_gyx': data[24],
+        'imu_gyy': data[25],
+        'imu_gyz': data[26]
         }
 
 def http_resquest_json(addr):
@@ -117,7 +157,10 @@ def http_resquest_json(addr):
     print(result_dict)
     return result_dict
 
-if not TESTING: eventlet.spawn(begin_poll)
-else: eventlet.spawn(testing)
+@app.before_first_request
+def init_brew_controller():
+    if not TESTING: socketio.start_background_task(begin_poll)
+    else: socketio.start_background_task(testing)
+
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=8090)
