@@ -104,7 +104,7 @@ void sd_rtc_setup() {
 
   uint8_t count = 0;
   while (!SD.begin(RTC_CS)) {  // pin 13 cs
-    if (count++ == 10) {
+    if (count++ == 5) {
       Serial.println("SD Card initialization failed! Moving on...");
       break;
     }
@@ -114,15 +114,19 @@ void sd_rtc_setup() {
   Serial.println("SD Card initialization done.");
   // digitalWrite(LED, LOW); // Turn the LED off
 
+  // /*
   Serial.println("Initializing RTC...");
   if (!rtc.begin()) {
       Serial.println("Couldn't find RTC");
       Serial.flush();
-      while (1) delay(10);
+      // while (1) delay(10);
     }
 
   rtc.start();
   Serial.println("RTC Started.\n");
+  // */
+
+
    // The PCF8523 can be calibrated for:
   //        - Aging adjustment
   //        - Temperature compensation

@@ -27,16 +27,19 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 void lora_setup() 
 {
-  pinMode(RFM95_RST, OUTPUT);
-  digitalWrite(RFM95_RST, HIGH);
+  // cli();  // stop interrupts
+  // pinMode(RFM95_RST, OUTPUT);
+  // digitalWrite(RFM95_RST, HIGH);
+  // delay(10);
 
   Serial.println("Feather LoRa TX Test!");
 
-  // manual reset
-  digitalWrite(RFM95_RST, LOW);
-  delay(10);
-  digitalWrite(RFM95_RST, HIGH);
-  delay(10);
+  // // manual reset
+  // digitalWrite(RFM95_RST, LOW);
+  // delay(10);
+  // digitalWrite(RFM95_RST, HIGH);
+  // delay(10);
+  // sei(); // resume interrupts
 
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");

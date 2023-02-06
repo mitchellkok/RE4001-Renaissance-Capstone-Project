@@ -4,11 +4,16 @@
 // $Id: RH_RF95.cpp,v 1.18 2018/01/06 23:50:45 mikem Exp $
 
 #include <RH_RF95.h>
+// #define SERIAL_DEBUG 1
 
 // interrupt handler and related code must be in RAM on ESP8266,
 // according to issue #46.
-#if defined(ESP8266)
+#if (RH_PLATFORM == RH_PLATFORM_ESP8266)
+    // interrupt handler and related code must be in RAM on ESP8266,
+    // according to issue #46.
     #define INTERRUPT_ATTR ICACHE_RAM_ATTR
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+    #define INTERRUPT_ATTR IRAM_ATTR 
 #else
     #define INTERRUPT_ATTR
 #endif
@@ -50,7 +55,6 @@ bool RH_RF95::init()
       #endif
       return false;
     }
-
 
     // Determine the interrupt number that corresponds to the interruptPin
     int interruptNumber = digitalPinToInterrupt(_interruptPin);
@@ -121,13 +125,13 @@ bool RH_RF95::init()
       return false; // Too many devices, not enough interrupt vectors
     }
 
-
     // Set up FIFO
     // We configure so that we can use the entire 256 byte FIFO for either receive
     // or transmit, but not both at the same time
     spiWrite(RH_RF95_REG_0E_FIFO_TX_BASE_ADDR, 0);
+    Serial.println(F("Works until here"));
     spiWrite(RH_RF95_REG_0F_FIFO_RX_BASE_ADDR, 0);
-
+    Serial.println(F("Not printing this out"));
     // Packet format is preamble + explicit-header + payload + crc
     // Explicit Header Mode
     // payload is TO + FROM + ID + FLAGS + message data
