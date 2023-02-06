@@ -22,21 +22,12 @@
 Adafruit_MCP9600 mcp;
 Adafruit_LSM6DSOX sox;
 
-void imu_thermo_setup()
-{
-    Serial.println("MCP9600 HW test and Adafruit LSM6DSOX test!");
+void thermo_setup() {
 
     /* Initialise the driver with THERMOCOUPLE_I2C_ADDRESS and the default I2C bus. */
     if (! mcp.begin(THERMOCOUPLE_I2C_ADDRESS)) {
         Serial.println("Thermocouple sensor not found. Check wiring!");
     }
-  
-    // Check for LSM module
-    if (!sox.begin_I2C()) {
-        Serial.println("SOX not initialised");
-    }
-
-  Serial.println("LSM6DSOX Found!");
   Serial.println("Found MCP9600!");
 
   // Thermocouple setup
@@ -75,10 +66,17 @@ void imu_thermo_setup()
 
   mcp.enable(true);
 
-  Serial.println(F("------------------------------"));
+}
 
 
+void imu_setup() {
   // IMU set up
+  // Check for LSM module
+    if (!sox.begin_I2C()) {
+        Serial.println("SOX not initialised");
+    }
+
+  Serial.println("LSM6DSOX Found!");
     // sox.setAccelRange(LSM6DS_ACCEL_RANGE_2_G);
   Serial.print("Accelerometer range set to: ");
   switch (sox.getAccelRange()) {

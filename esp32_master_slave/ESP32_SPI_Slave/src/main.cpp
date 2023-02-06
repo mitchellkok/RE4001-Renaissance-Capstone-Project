@@ -17,7 +17,10 @@ void setup() {
     spi_setup();
     buffer_setup(&rx_union, &tx_union, true);  
 
+    Serial.println("Starting GPS...");
     gpsSerial.begin(GPSBaud);
+
+    Serial.println("Starting 3 in 1...");
     init3in1();
     // CO2 SENSOR: NO SETUP NEEDED
 

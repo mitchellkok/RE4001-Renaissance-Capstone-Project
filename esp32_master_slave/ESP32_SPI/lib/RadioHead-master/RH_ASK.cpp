@@ -18,10 +18,11 @@ HardwareTimer timer(1);
     // interrupt handler and related code must be in RAM on ESP8266,
     // according to issue #46.
     #define INTERRUPT_ATTR ICACHE_RAM_ATTR
+#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+    #define INTERRUPT_ATTR IRAM_ATTR 
 #else
     #define INTERRUPT_ATTR
 #endif
-
 // RH_ASK on Arduino uses Timer 1 to generate interrupts 8 times per bit interval
 // Define RH_ASK_ARDUINO_USE_TIMER2 if you want to use Timer 2 instead of Timer 1 on Arduino
 // You may need this to work around other librraies that insist on using timer 1

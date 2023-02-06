@@ -12,6 +12,7 @@ void gravity_so2_setup() {
   {
     Serial.println("NO Gas Sensor Devices !");
     delay(1000);
+    break;
   }
   Serial.println("The device is connected successfully!");
 

@@ -10,8 +10,11 @@
 #include <data_structs.h>
 #include <batt.h>
 
+#define SDCARD  1
+#define LORA    1
+
 #define STARTBYTE 0xAA
-#define G_LED 4
+#define Y_LED 4
 #define I2C_SDA 21
 #define I2C_SCL 22
 
@@ -20,24 +23,30 @@ data_union rx_union;
 
 void setup (void)
 {
-  pinMode(G_LED, OUTPUT); // Declare the LED as an output
-  digitalWrite(G_LED, HIGH); // Turn the LED on
+  pinMode(Y_LED, OUTPUT); // Declare the LED as an output
+  digitalWrite(Y_LED, HIGH); // Turn the LED on
   Serial.begin(9600);
   Wire.begin(I2C_SDA, I2C_SCL);
 
   spi_setup();
   buffer_setup(&rx_union, &tx_union, true);  
-  sd_rtc_setup();
 
+  #ifdef SDCARD
+    sd_rtc_setup();
+  #endif
+  
   init3in1();
   gravity_so2_setup();
   china_so2_setup();
+  imu_setup();
+  thermo_setup();
 
-  imu_thermo_setup();
-  lora_setup();
-
+  #ifdef LORA
+    lora_setup();
+  #endif
+  
   Serial.println("Master Ready\n");       
-  digitalWrite(G_LED, LOW); // Turn the LED off      
+  digitalWrite(Y_LED, LOW); // Turn the LED off      
 }
 
 void loop(void)
@@ -97,7 +106,9 @@ void loop(void)
   tx.data_struct.thermocouple = thermo_readings;
   tx.data_struct.china_so2 = china_so2;
   tx.data_struct.co2 = co2_slave;
-  lora(tx.buf);
+  #ifdef LORA
+    lora(tx.buf);
+  #endif 
   
   Serial.println("");
   delay(2000);
