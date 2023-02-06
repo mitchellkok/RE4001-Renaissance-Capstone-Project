@@ -6,6 +6,9 @@ from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
 import eventlet
+import os
+import os.path
+
 eventlet.monkey_patch()
 
 TESTING = True # Toggle for test mode
@@ -24,6 +27,11 @@ output_data = {}
 datetime = 0
 df = pd.DataFrame() # global dataframe to store data
 
+# Set path of csv file (csv file will be saved in the same location laptop2.py)
+path = os.getcwd()
+newPath = path.replace(os.sep, '/')
+csv_file = newPath + '/' + 'dashboard_data.csv'
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -39,7 +47,8 @@ def testing():
         output_data['date_time'] = datetime
         print("DATA: ", datetime, output_data)
         socketio.emit('data', output_data) # send the data back to the client
-        df = pd.concat([df, pd.DataFrame.from_records([output_data])]) 
+        df = pd.concat([df, pd.DataFrame.from_records([output_data])])
+        # df.to_csv(csv_file)
         eventlet.sleep(5)
     
 def begin_poll():
@@ -55,9 +64,16 @@ def begin_poll():
                 input_data = json.loads(msg.data)
                 print(cnt, input_data)
                 parse_data()
-                # TODO: use socketio.emit to send data to frontend (can refer to testing())
+
+                # TODO: use socketio.emit to send data to frontend (can refer to testing()) --> Test with actual ESP32 now
+                for i in output_data.keys():
+                    output_data[i] = datetime*(datetime%2)
+                output_data['date_time'] = datetime
+                socketio.emit('data', output_data)
 
                 # TODO: add dictionary to pandas dataframe and append to CSV
+                df = pd.concat([df, pd.DataFrame.from_records([output_data])])
+                df.to_csv(csv_file) # data will be written to csv file
             except:
                 print("Could not parse JSON:", msg.data)
             cnt += 1           
