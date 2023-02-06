@@ -36,7 +36,7 @@ def testing():
         datetime +=1
         for i in output_data.keys():
             output_data[i] = datetime*(datetime%2)
-        output_data[datetime] = datetime
+        output_data['date_time'] = datetime
         print("DATA: ", datetime, output_data)
         socketio.emit('data', output_data) # send the data back to the client
         df = pd.concat([df, pd.DataFrame.from_records([output_data])]) 
