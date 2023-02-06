@@ -36,6 +36,7 @@ def testing():
         datetime +=1
         for i in output_data.keys():
             output_data[i] = datetime*(datetime%2)
+        output_data[datetime] = datetime
         print("DATA: ", datetime, output_data)
         socketio.emit('data', output_data) # send the data back to the client
         df = pd.concat([df, pd.DataFrame.from_records([output_data])]) 
@@ -54,7 +55,7 @@ def begin_poll():
                 input_data = json.loads(msg.data)
                 print(cnt, input_data)
                 parse_data()
-                # TODO: use socketio.emit to send data to frontend (refer to testing())
+                # TODO: use socketio.emit to send data to frontend (can refer to testing())
 
                 # TODO: add dictionary to pandas dataframe and append to CSV
             except:
