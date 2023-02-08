@@ -42,8 +42,8 @@ void loop() {
             tx_union.readings.atm = dispAtmData();
             tx_union.readings.gps = GPS();
             tx_union.readings.co2 = co2_reading();
-            float batt_voltage = get_battery_voltage();
-            float batt_percent = get_battery_percent(batt_voltage);
+            tx_union.readings.battery_voltage = get_battery_voltage();
+            tx_union.readings.battery_percent = get_battery_percent(tx_union.readings.battery_voltage);
         } else if (rx_union.buf[0] == 0xBB) {
             // READINGS HAVE ALREADY BEEN SENT IN SLAVE.WAIT
             tx_union.buf[0] = 255; // load in ACK symbol to send on 0xAA

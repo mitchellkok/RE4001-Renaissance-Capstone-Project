@@ -54,16 +54,16 @@ void setup (void)
 void loop(void)
 {
   #ifdef SDCARD
-    Serial.println("HERE0");datetime_union datetime = get_datetime();
+    datetime_union datetime = get_datetime();
   #endif
-  Serial.println("HERE1");float batt_voltage = get_battery_voltage();
-  Serial.println("HERE2");float batt_percent = get_battery_percent(batt_voltage);
-  Serial.println("HERE3");imu_union imu_readings = imu();
-  Serial.println("HERE4");thermo_union thermo_readings = thermo();
-  Serial.println("HERE5");atm_union atm_master = dispAtmData();
-  Serial.println("HERE6");gravity_so2_union gravity_so2_readings = gravity_so2();
-  Serial.println("HERE7");float ecsense_so2 = ecsense_so2_reading();
-  Serial.println("HERE8");
+  float m_batt_voltage = get_battery_voltage();
+  float m_batt_percent = get_battery_percent(m_batt_voltage);
+  imu_union imu_readings = imu();
+  thermo_union thermo_readings = thermo();
+  atm_union atm_master = dispAtmData();
+  gravity_so2_union gravity_so2_readings = gravity_so2();
+  float ecsense_so2 = ecsense_so2_reading();
+
   #ifdef SLAVE
     cli();  // stop interrupts
     trigger_cmd[1]++; // counter to track trigger number
@@ -78,8 +78,13 @@ void loop(void)
     atm_union atm_slave = rx_union.readings.atm;
     gps_union gps_slave = rx_union.readings.gps;
     int co2_slave = rx_union.readings.co2;
-    // TODO: SLAVE BATTERY READINGS
-    
+    float s_batt_voltage = rx_union.readings.battery_voltage;
+    float s_batt_percent = rx_union.readings.battery_percent;
+   
+    Serial.println("Slave Battery Readings:");
+    Serial.printf("Voltage: %f", s_batt_voltage);Serial.println("");
+    Serial.printf("Percentage: %f%", s_batt_percent);Serial.println("");
+    Serial.println("");
     Serial.println("Slave 3 in 1 Readings:");
     Serial.printf("Temperature: %f", atm_slave.fl[0]);Serial.println("");
     Serial.printf("Pressure: %f", atm_slave.fl[1]);Serial.println("");
@@ -116,9 +121,11 @@ void loop(void)
     tx.data_struct.atm_slave = atm_slave;
     tx.data_struct.gps_slave = gps_slave;
     tx.data_struct.co2 = co2_slave;
+    tx.data_struct.s_battery_voltage = s_batt_voltage;
+    tx.data_struct.s_battry_percent = s_batt_percent;
   #endif
-  tx.data_struct.m_battery_voltage = batt_voltage;
-  tx.data_struct.m_battry_percent = batt_percent;
+  tx.data_struct.m_battery_voltage = m_batt_voltage;
+  tx.data_struct.m_battry_percent = m_batt_percent;
   tx.data_struct.tx_rssi = last_rssi;
   #ifdef LORA
     last_rssi = lora(tx.buf);

@@ -12,6 +12,8 @@ union data_union {
       atm_union atm;
       gps_union gps;
       int co2;
+      float battery_voltage;
+      float battery_percent;
     } readings;
     char s[BUF_LEN];
     uint8_t buf[BUF_LEN];

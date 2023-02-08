@@ -50,6 +50,8 @@
             atm_union atm;
             gps_union gps;
             int co2;
+            float battery_voltage;
+            float battery_percent;
         } readings;
         char s[64]; // 64 bytes is maximum buffer length for SPI library
         uint8_t buf[64];

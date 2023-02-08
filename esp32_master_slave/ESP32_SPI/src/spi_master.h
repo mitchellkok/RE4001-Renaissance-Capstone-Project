@@ -6,7 +6,7 @@
 // #define VSPI_MOSI 23
 // #define VSPI_SCLK 18
 #define VSPI_CS  0     
-#define BUF_LEN 68
+#define BUF_LEN 64
 #define READINGS_DELAY_MS 2000
 #define READINGS_INTERVAL_MS 5000
 
