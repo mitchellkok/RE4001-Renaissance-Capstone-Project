@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './bootstrap_modal.css';
 import styles from './fetch.module.css';
 
+import Reading from './components/Reading';
+
 const DataTable = () => {
   const [data, setData] = useState({});
   const [cumulative, setDataArray] = useState([]);
@@ -53,20 +55,27 @@ const DataTable = () => {
                   <div className={styles.row}>
                     <div className={styles.midcolumn25}>
                       <div className={styles.column25}>
-                        <h3 className={styles.h3_custom} >Gas Sensors</h3>
-                        <div className={styles.reading} onClick={handleShow("DFRobot Gravity SO2", "Gravity SO2", "g_so2")}>
-                          <h5 className={styles.h5_custom}>Gravity SO2</h5>
-                          <h5>{ data.g_so2.toFixed(2) } ppm</h5>
-                          <h5>{ data.g_t.toFixed(2) } °C</h5>
-                        </div>
-                        <div className={styles.reading} onClick={handleShow("ECSense SO2", "ECSense SO2", "e_so2")}>
-                          <h5 className={styles.h5_custom}>ECSense SO2</h5>
-                          <h5>{ data.g_so2.toFixed(2) } ppm</h5>
-                        </div>
-                        <div className={styles.reading} onClick={handleShow("CO2", "CO2", "co2")}>
-                          <h5 className={styles.h5_custom}>CO2</h5>
-                          <h5>{ data.g_so2.toFixed(2) } ppm</h5>
-                        </div>
+                      <h3 className={styles.h3_custom} >Gas Sensors</h3>
+                        <Reading 
+                        parentFunction = {handleShow("DFRobot Gravity SO2", "Gravity SO2", "g_so2")}
+                        device = 'Gravity SO2'
+                        reading1= {data.g_so2.toFixed(2)}
+                        unit1 = 'ppm'
+                        reading2 = {data.g_t.toFixed(2)}
+                        unit2 = '°C'/>
+
+                        <Reading 
+                        parentFunction = {handleShow("ECSense SO2", "ECSensor SO2", "e_so2")}
+                        device = 'ECSense SO2'
+                        reading1= {data.g_so2.toFixed(2)}
+                        unit1 = 'ppm'/>
+
+                        <Reading 
+                        parentFunction = {handleShow("CO2", "CO2", "co2")}
+                        device = 'CO2'
+                        reading1= {data.g_so2.toFixed(2)}
+                        unit1 = 'ppm'/>
+
                       </div>
                       <div className={styles.column25}>
                         <h3 className={styles.h3_custom} >Others</h3>
