@@ -22,11 +22,8 @@ lora_union rx;
 void setup()
 {
   pinMode(LED, OUTPUT);
-  pinMode(RFM95_RST, OUTPUT);
-  digitalWrite(RFM95_RST, HIGH);
-
   Serial.begin(9600);
-  delay(100);
+  delay(10);
 
   Serial.println("Setting up WiFi and HTTP");
   setup_http();
@@ -91,6 +88,8 @@ void loop()
       Serial.println(sizeof(rx.buf));
       print_lora_union(rx); 
       Serial.println("Sending ping");
+      
+      rx.data_struct.rx_rssi = rf95.lastRssi();
       sse_getData(&rx);
       
       // Send a reply

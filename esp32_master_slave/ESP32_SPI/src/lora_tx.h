@@ -28,24 +28,27 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 void lora_setup() 
 {
   // cli();  // stop interrupts
-  // pinMode(RFM95_RST, OUTPUT);
-  // digitalWrite(RFM95_RST, HIGH);
-  // delay(10);
+  pinMode(RFM95_RST, OUTPUT);
+  pinMode(RFM95_INT, INPUT_PULLDOWN);
+  digitalWrite(RFM95_RST, HIGH);
+  delay(10);
+
+  // manual reset
+  digitalWrite(RFM95_RST, LOW);
+  delay(20);
+  digitalWrite(RFM95_RST, HIGH);
+  delay(20);
 
   Serial.println("Feather LoRa TX Test!");
-
-  // // manual reset
-  // digitalWrite(RFM95_RST, LOW);
-  // delay(10);
-  // digitalWrite(RFM95_RST, HIGH);
-  // delay(10);
-  // sei(); // resume interrupts
-
   while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     Serial.println("Uncomment '#define SERIAL_DEBUG' in RH_RF95.cpp for detailed debug info");
+    delay(2000);
   }
+  pinMode(RFM95_CS, OUTPUT);
+  digitalWrite(RFM95_CS, HIGH);
   Serial.println("LoRa radio init OK!");
+  // sei(); // resume interrupts
 
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
   if (!rf95.setFrequency(RF95_FREQ)) {
@@ -63,7 +66,7 @@ void lora_setup()
 
 int16_t packetnum = 0;  // packet counter, we increment per xmission
 
-void lora(uint8_t* tx)
+int16_t lora(uint8_t* tx)
 {
   Serial.print("LoRa TX Sending... ");
   Serial.print(RH_RF95_MAX_MESSAGE_LEN); Serial.println(" Bytes");
@@ -85,7 +88,8 @@ void lora(uint8_t* tx)
       Serial.print("Got reply: ");
       Serial.println((char*)buf);
       Serial.print("RSSI: ");
-      Serial.println(rf95.lastRssi(), DEC);    
+      Serial.println(rf95.lastRssi(), DEC);
+      return rf95.lastRssi();
     }
     else
     {
@@ -96,5 +100,5 @@ void lora(uint8_t* tx)
   {
     Serial.println("No reply, is there a listener around?");
   }
-
+  return -1;
 }

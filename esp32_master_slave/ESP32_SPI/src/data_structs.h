@@ -65,10 +65,16 @@
         gps_union gps_slave;
         imu_union imu;
         thermo_union thermocouple;
-        float china_so2;
+        float ecsense_so2;
         int co2;
-        // TODO: add Batt voltage
+        float m_battery_voltage;
+        float m_battry_percent;
+        float s_battery_voltage;
+        float s_battry_percent;
+        int16_t tx_rssi;
+        int16_t rx_rssi;
         } data_struct;
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes
     };
+
 #endif

@@ -12,8 +12,8 @@
     // interrupt handler and related code must be in RAM on ESP8266,
     // according to issue #46.
     #define INTERRUPT_ATTR ICACHE_RAM_ATTR
-#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
-    #define INTERRUPT_ATTR IRAM_ATTR 
+// #elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+//     #define INTERRUPT_ATTR IRAM_ATTR 
 #else
     #define INTERRUPT_ATTR
 #endif
@@ -82,7 +82,7 @@ bool RH_RF95::init()
     {
       #ifdef SERIAL_DEBUG
         Serial.println(F("ERROR: Failed to put device in LoRa mode."));
-        Serial.print(F("RH_RF95_REG_01_OP_MODE: "));
+        Serial.print(F("RH_RF95_REG_01_OP_MODE: 0x"));
         Serial.println(spiRead(RH_RF95_REG_01_OP_MODE), HEX);
       #endif
 	    return false; // No device present?
@@ -124,14 +124,13 @@ bool RH_RF95::init()
       #endif
       return false; // Too many devices, not enough interrupt vectors
     }
-
+        Serial.println(F("Works until here"));
     // Set up FIFO
     // We configure so that we can use the entire 256 byte FIFO for either receive
     // or transmit, but not both at the same time
     spiWrite(RH_RF95_REG_0E_FIFO_TX_BASE_ADDR, 0);
-    Serial.println(F("Works until here"));
     spiWrite(RH_RF95_REG_0F_FIFO_RX_BASE_ADDR, 0);
-    Serial.println(F("Not printing this out"));
+        Serial.println(F("Not printing this out"));
     // Packet format is preamble + explicit-header + payload + crc
     // Explicit Header Mode
     // payload is TO + FROM + ID + FLAGS + message data

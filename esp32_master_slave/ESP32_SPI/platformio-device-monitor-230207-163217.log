@@ -1,0 +1,34 @@
+␀␀��␐	~��1���␑��Ʃ�9�!��TX BUFFER: 
+48 65 6C 6C 6F 2C 20 57 6F 72 6C 64 21 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 40 0 0 0 
+RX BUFFER: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 48 65 6C 6C 
+MS8607 initialised!
+Humidity resolution set to 8-bit
+Pressure and Temperature resolution set to 4096
+
+The device is connected successfully!
+CHINA SO2 setup done!
+LSM6DSOX Found!
+Accelerometer range set to: +-4G
+Gyro range set to: 2000 degrees/s
+Accelerometer data rate set to: 104 Hz
+Gyro data rate set to: 104 Hz
+Found MCP9600!
+ADC resolution set to 18 bits
+Thermocouple type set to K type
+Filter coefficient value set to: 3
+Alert #1 temperature set to 30.00
+Feather LoRa TX Test!
+Works until here
+Guru Meditation Error: Core  1 panic'ed (Interrupt wdt timeout on CPU1)
+Core 1 register dump:
+PC      : 0x4008b774  PS      : 0x00060034  A0      : 0x8008a92f  A1      : 0x3ffbe660  
+A2      : 0x3ffb84c0  A3      : 0x3ffb8074  A4      : 0x00000001  A5      : 0x00000001  
+A6      : 0x00060023  A7      : 0x00000000  A8      : 0x3ffb8074  A9      : 0x3ffb8074  
+A10     : 0x00000018  A11     : 0x00000018  A12     : 0x00000001  A13     : 0x00000001  
+A14     : 0x00060021  A15     : 0x00000000  SAR     : 0x00000015  EXCCAUSE: 0x00000006  
+EXCVADDR: 0x00000000  LBEG    : 0x400014fd  LEND    : 0x4000150d  LCOUNT  : 0xfffffffb  
+Core 1 was running in ISR context:
+EPC1    : 0x40089dca  EPC2    : 0x00000000  EPC3    : 0x00000000  EPC4    : 0x4008b774
+
+Backtrace: 0x4008b774:0x3ffbe660 0x4008a92c:0x3ffbe680 0x40088c0b:0x3ffbe6a0 0x400d9989:0x3ffbe6e0 0x400d280c:0x3ffbe700 0x400d4468:0x3ffbe730 0x400d4d00:0x3ffbe750 0x400d46a5:0x3ffbe770 0x400d4882:
