@@ -1,19 +1,19 @@
 import requests
 import json
+import eventlet
+import os
+import os.path
 import pandas as pd
 import sseclient
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
-import eventlet
-import os
-import os.path
 
 eventlet.monkey_patch()
 
 TESTING = True # Toggle for test mode
 test_keys = ['date_time', 'm_t', 'm_p', 'm_h', 's_t', 's_p', 's_h', 'g_so2', 'g_t', 't_t', 'e_so2',
-                'co2', 'rssi', 'gps_sat', 'gps_hdop', 'gps_lat', 'gps_lng', 'gps_alt', 'gps_deg',
+                'co2', 'gps_sat', 'gps_hdop', 'gps_lat', 'gps_lng', 'gps_alt', 'gps_deg',
                 'gps_mps', 'gps_val', 'imu_tmp', 'imu_acx', 'imu_acy', 'imu_acz', 'imu_gyx',
                 'imu_gyy', 'imu_gyz', "tx_rssi", "rx_rssi", "m_bv", "m_bp", "s_bv", "s_bp"]
 
