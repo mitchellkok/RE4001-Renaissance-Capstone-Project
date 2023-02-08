@@ -60,8 +60,9 @@ def begin_poll():
         for msg in messages:
             try:
                 input_data = json.loads(msg.data)
-                print(cnt, input_data)
                 output_data = parse_data(input_data)
+                print("Received data from basestation:\n", cnt, output_data)
+                
                 # TODO: use socketio.emit to send data to frontend (can refer to testing()) --> Test with actual ESP32 now
                 socketio.emit('data', output_data)
 
@@ -83,6 +84,12 @@ def parse_data(input_data={}):
             + str(input_data["date_min"]).zfill(2) + ":"
             + str(input_data["date_sec"]).zfill(2)
             )
+        output_data.pop("date_day", None)
+        output_data.pop("date_month", None)
+        output_data.pop("date_year", None)
+        output_data.pop("date_hour", None)
+        output_data.pop("date_min", None)
+        output_data.pop("date_sec", None)
     except Exception as e:
         for i in test_keys:
             output_data[i] = "--"
