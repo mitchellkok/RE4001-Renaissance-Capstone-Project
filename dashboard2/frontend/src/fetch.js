@@ -77,67 +77,90 @@ const DataTable = () => {
                         unit1 = 'ppm'/>
 
                       </div>
+
                       <div className={styles.column25}>
                         <h3 className={styles.h3_custom} >Others</h3>
-                        <div className={styles.reading} onClick={handleShow("Thermocouple", "Thermocouple", "t_t")}>
-                          <h5 className={styles.h5_custom}>Thermocouple</h5>
-                          <h5>{ data.t_t.toFixed(2) } °C</h5>
-                        </div>
-                        <div className={styles.reading} onClick={handleShow("LoRa RSSI", "RSSI", "rssi")}>
-                          <h5 className={styles.h5_custom}>LoRa RSSI</h5>
-                          <h5>{ data.t_t.toFixed(2) } °C</h5>
-                        </div>
+                        <Reading 
+                        parentFunction = {handleShow("Thermocouple", "Thermocouple", "t_t")}
+                        device = 'Thermocouple'
+                        reading1= {data.t_t.toFixed(2)}
+                        unit1 = '°C'/>
+
+                        <Reading 
+                        parentFunction = {handleShow("LoRa RSSI", "RSSI", "rssi")}
+                        device = 'LoRa RSSI'
+                        reading1= {data.t_t.toFixed(2)}
+                        unit1 = '°C'/>
+
                       </div>
                     </div>
                     <div className={styles.midcolumn25}>
                       <div className={styles.column25}>
                         <div>
-                          <h3 className={styles.h3_custom} >Internal 3 in 1</h3>
-                          <div className={styles.reading} onClick={handleShow("Master 3 in 1", "Temperature", "m_t")}>
-                            <h5 className={styles.h5_custom}>Temperature</h5>
-                            <h5>{ data.m_t.toFixed(2) } °C</h5>
-                          </div>
-                          <div className={styles.reading} onClick={handleShow("Master 3 in 1", "Pressure", "m_p")}>
-                            <h5 className={styles.h5_custom}>Pressure</h5>
-                            <h5>{ data.m_p.toFixed(2) } hPa</h5>
-                          </div>
-                          <div className={styles.reading} onClick={handleShow("Master 3 in 1", "Humidity", "m_h")}>
-                            <h5 className={styles.h5_custom}>Humidity</h5>
-                            <h5>{ data.m_h.toFixed(2) } %rH</h5>
-                          </div>
-                          <h3 className={styles.h3_custom} >External 3 in 1</h3>
-                          <div className={styles.reading} onClick={handleShow("Slave 3 in 1", "Temperature", "s_t")}>
-                            <h5 className={styles.h5_custom}>Temperature</h5>
-                            <h5>{ data.s_t.toFixed(2) } °C</h5>
-                          </div>
-                          <div className={styles.reading} onClick={handleShow("Slave 3 in 1", "Pressure", "s_p")}>
-                            <h5 className={styles.h5_custom}>Pressure</h5>
-                            <h5>{ data.s_p.toFixed(2) } hPa</h5>
-                          </div>
-                          <div className={styles.reading} onClick={handleShow("Slave 3 in 1", "Humidity", "s_h")}>
-                            <h5 className={styles.h5_custom}>Humidity</h5>
-                            <h5>{ data.s_h.toFixed(2) } %rH</h5>
-                          </div>
+                          <h3 className={styles.h3_custom} >Internal 3 in 1</h3>             
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Temperature", "m_t")}
+                        device = 'Temperature'
+                        reading1= {data.m_t.toFixed(2)}
+                        unit1 = '°C'/>
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Pressure", "m_p")}
+                        device = 'Pressure'
+                        reading1= {data.m_p.toFixed(2)}
+                        unit1 = 'hPa'/>
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Humidity", "m_h")}
+                        device = 'Humidity'
+                        reading1= {data.m_h.toFixed(2)}
+                        unit1 = '%rH'/>
+                          
+                        <h3 className={styles.h3_custom} >External 3 in 1</h3>
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Temperature", "m_t")}
+                        device = 'Temperature'
+                        reading1= {data.s_t.toFixed(2)}
+                        unit1 = '°C'/>
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Pressure", "m_p")}
+                        device = 'Pressure'
+                        reading1= {data.s_p.toFixed(2)}
+                        unit1 = 'hPa'/>
+                        <Reading 
+                        parentFunction = {handleShow("Master 3 in 1", "Humidity", "m_h")}
+                        device = 'Humidity'
+                        reading1= {data.s_h.toFixed(2)}
+                        unit1 = '%rH'/>
                         </div>  
                       </div>
                     </div>
+
                     <div className={styles.midcolumn50}>
                       <div className={styles.column50}>
                         <h3 className={styles.h3_custom} >GPS</h3>
                         <div className={styles.subrow}>
                           <div className={styles.subcolumn}>
+
+                          <Reading 
+                          parentFunction = {handleShow("GPS", "Satellites", "gps_sat")}
+                          device = 'Satellites'
+                          reading1= {data.s_h.toFixed(2)}
+                          unit1 = '%rH'/>
+
                             <div className={styles.reading} onClick={handleShow("GPS", "Satellites", "gps_sat")}>
                               <h5 className={styles.h5_custom}>Satellites</h5>
                               <h5>{ data.t_t.toFixed(0) }</h5>
                             </div>
+
                             <div className={styles.reading} onClick={handleShow("GPS", "HDOP", "gps_hdop")}>
                               <h5 className={styles.h5_custom}>HDOP</h5>
                               <h5>{ data.t_t.toFixed(2) }</h5>
                             </div>
+
                             <div className={styles.reading} onClick={handleShow("GPS", "Latitude", "gps_lat")}>
                               <h5 className={styles.h5_custom}>Latitude</h5>
                               <h5>{ data.t_t.toFixed(2) } °</h5>
                             </div>
+                            
                             <div className={styles.reading} onClick={handleShow("GPS", "Longitude", "gps_lng")}>
                               <h5 className={styles.h5_custom}>Longitude</h5>
                               <h5>{ data.t_t.toFixed(2) } °</h5>
