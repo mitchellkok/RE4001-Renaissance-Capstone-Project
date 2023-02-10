@@ -12,7 +12,7 @@ AsyncWebServer server(80);
 AsyncEventSource events("/events");
  
 StaticJsonDocument<500> jsonDocument;
-char buffer[500];
+char buffer[1280];
 
 void setup_http() {     
   // Connect to Wi-Fi network with SSID and password

@@ -5,6 +5,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+*.csv
 
 
 # c build files (except .uf2 for flashing)
