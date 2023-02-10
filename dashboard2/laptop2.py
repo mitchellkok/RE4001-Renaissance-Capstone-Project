@@ -12,10 +12,40 @@ from flask_cors import CORS
 eventlet.monkey_patch()
 
 TESTING = False # Toggle for test mode
-test_keys = ['date_time', 'm_t', 'm_p', 'm_h', 's_t', 's_p', 's_h', 'g_so2', 'g_t', 't_t', 'e_so2',
-                'co2', 'gps_sat', 'gps_hdop', 'gps_lat', 'gps_lng', 'gps_alt', 'gps_deg',
-                'gps_mps', 'gps_val', 'imu_tmp', 'imu_acx', 'imu_acy', 'imu_acz', 'imu_gyx',
-                'imu_gyy', 'imu_gyz', "tx_rssi", "rx_rssi", "m_bv", "m_bp", "s_bv", "s_bp"]
+test_keys = ['date_time', 
+            'm_t',      # Master 3 in 1 Temperature
+            'm_p',      # Master 3 in 1 Pressure 
+            'm_h',      # Master 3 in 1 Humidity
+            's_t',      # Slave 3 in 1 Temperature
+            's_p',      # Slave 3 in 1 Pressure
+            's_h',      # Slave 3 in 1 Humidity
+            'g_so2',    # Gravity SO2
+            'g_t',      # Gravity Temperature
+            't_t',      # Thermocouple Temperature
+            'e_so2',    # ECSense SO2
+            'co2',      # CO2
+            'gps_sat',  # GPS Satellites
+            'gps_hdop', # GPS HDOP
+            'gps_lat',  # GPS Latitude
+            'gps_lng',  # GPS Longitude
+            'gps_alt',  # GPS Altitude (Meters)
+            'gps_deg',  # GPS Degrees
+            'gps_mps',  # GPS Ground Speed (MPS)
+            'gps_val',  # GPS Value
+            'imu_tmp',  # IMU Temperature
+            'imu_acx',  # IMU Acceleration X
+            'imu_acy',  # IMU Acceleration Y
+            'imu_acz',  # IMU Acceleration Z
+            'imu_gyx',  # IMU Gyro X
+            'imu_gyy',  # IMU Gyro Y
+            'imu_gyz',  # IMU Gyro Z
+            "tx_rssi",  # LoRa TX RSSI (Master)
+            "rx_rssi",  # LoRa RX RSSI (Basestation)
+            "m_bv",     # Master Battery Voltage
+            "m_bp",     # Master Battery Percentage
+            "s_bv",     # Slave Battery Voltage
+            "s_bp"      # Slave Battery Percentage
+            ]
 
 app = Flask(__name__)
 CORS(app,resources={r"/*":{"origins":"*"}})
@@ -54,7 +84,15 @@ def begin_poll():
     print("Starting...")
     print("CSV FILE:", csv_file)
     url = "http://" + esp32_address + '/events'
-    requests.get(url, stream=True)
+
+    connected = False
+    while connected == False:
+        try:
+            requests.get(url, stream=True)
+            connected = True
+        except:
+            print("Failed to connect to basestation!")
+
     messages = sseclient.SSEClient(url)
     cnt = 0
     with app.app_context():
