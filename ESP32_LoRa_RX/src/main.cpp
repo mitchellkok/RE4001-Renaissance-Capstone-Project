@@ -84,12 +84,13 @@ void loop()
       digitalWrite(LED, HIGH);
       Serial.print("\nRSSI: ");
       Serial.println(rf95.lastRssi(), DEC);
+      rx.data_struct.rx_rssi = rf95.lastRssi();
+      
       Serial.print("Received LEN = ");
       Serial.println(sizeof(rx.buf));
       print_lora_union(rx); 
       Serial.println("Sending ping");
-      
-      rx.data_struct.rx_rssi = rf95.lastRssi();
+
       sse_getData(&rx);
       
       // Send a reply

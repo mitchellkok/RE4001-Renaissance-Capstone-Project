@@ -74,7 +74,7 @@ char* getData(lora_union *rx) {
     jsonDocument["gps_lat"] = rx->data_struct.gps_slave.readings.lat;
     jsonDocument["gps_lng"] = rx->data_struct.gps_slave.readings.lng;
     jsonDocument["gps_alt"] = rx->data_struct.gps_slave.readings.meters;
-    jsonDocument["gps_deg"] = rx->data_struct.gps_slave.readings.deg;
+    // jsonDocument["gps_deg"] = rx->data_struct.gps_slave.readings.deg;
     jsonDocument["gps_mps"] = rx->data_struct.gps_slave.readings.mps;
     jsonDocument["gps_val"] = rx->data_struct.gps_slave.readings.value;
 

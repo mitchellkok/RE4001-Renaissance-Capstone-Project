@@ -28,7 +28,7 @@ gravity_so2_union gravity_so2() {
   Serial.print(gas.queryGasType());
   Serial.print(" concentration is: ");
   Serial.print(gas.readGasConcentrationPPM());  // float
-  Serial.println(" %vol");
+  Serial.println(" ppm");
   Serial.print("The board temperature is: ");
   Serial.print(gas.readTempC());  // float
   Serial.println(" ℃");

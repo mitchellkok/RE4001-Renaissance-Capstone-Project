@@ -59,22 +59,24 @@
 
     union lora_union {
         struct data_struct {
-        uint8_t start_byte;
-        datetime_union datetime;
-        gravity_so2_union gravity_so2;
-        atm_union atm_master;
-        atm_union atm_slave;
-        gps_union gps_slave;
-        imu_union imu;
-        thermo_union thermocouple;
-        float ecsense_so2;
-        int co2;
-        float m_battery_voltage;
-        float m_battry_percent;
-        float s_battery_voltage;
-        float s_battry_percent;
-        int16_t tx_rssi;
-        int16_t rx_rssi;
+            uint8_t start_byte;
+            datetime_union datetime;
+            gravity_so2_union gravity_so2;
+            atm_union atm_master;
+            atm_union atm_slave;
+            gps_union gps_slave;
+            imu_union imu;
+            thermo_union thermocouple;
+            float ecsense_so2;
+            int co2;
+            int m_battery_adc;
+            float m_battery_voltage;
+            float m_battry_percent;
+            int s_battery_adc;
+            float s_battery_voltage;
+            float s_battry_percent;
+            int16_t tx_rssi;
+            int16_t rx_rssi;
         } data_struct;
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN]; // 251 bytes
     };

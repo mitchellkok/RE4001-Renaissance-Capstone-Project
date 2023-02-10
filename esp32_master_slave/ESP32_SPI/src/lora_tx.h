@@ -89,7 +89,6 @@ int16_t lora(uint8_t* tx)
       Serial.println((char*)buf);
       Serial.print("RSSI: ");
       Serial.println(rf95.lastRssi(), DEC);
-      return rf95.lastRssi();
     }
     else
     {
@@ -100,5 +99,5 @@ int16_t lora(uint8_t* tx)
   {
     Serial.println("No reply, is there a listener around?");
   }
-  return -1;
+  return rf95.lastRssi();
 }

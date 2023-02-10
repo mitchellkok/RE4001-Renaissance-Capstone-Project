@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 eventlet.monkey_patch()
 
-TESTING = True # Toggle for test mode
+TESTING = False # Toggle for test mode
 test_keys = ['date_time', 'm_t', 'm_p', 'm_h', 's_t', 's_p', 's_h', 'g_so2', 'g_t', 't_t', 'e_so2',
                 'co2', 'gps_sat', 'gps_hdop', 'gps_lat', 'gps_lng', 'gps_alt', 'gps_deg',
                 'gps_mps', 'gps_val', 'imu_tmp', 'imu_acx', 'imu_acy', 'imu_acz', 'imu_gyx',
@@ -52,6 +52,7 @@ def testing():
 def begin_poll():
     global df
     print("Starting...")
+    print("CSV FILE:", csv_file)
     url = "http://" + esp32_address + '/events'
     requests.get(url, stream=True)
     messages = sseclient.SSEClient(url)
@@ -62,7 +63,7 @@ def begin_poll():
                 input_data = json.loads(msg.data)
                 output_data = parse_data(input_data)
                 print("Received data from basestation:\n", cnt, output_data)
-                
+
                 # TODO: use socketio.emit to send data to frontend (can refer to testing()) --> Test with actual ESP32 now
                 socketio.emit('data', output_data)
 

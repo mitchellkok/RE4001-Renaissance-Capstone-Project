@@ -5,15 +5,12 @@
 #include <co2.h>
 #include <batt.h>
 
-#define LED 2
-
 data_union readings_union[5];   // TODO: implement circular counter, store the last 5 readings
 data_union rx_union;
 data_union tx_union;
 
 void setup() {
     Serial.begin(9600);
-    pinMode(LED, OUTPUT);
     spi_setup();
     buffer_setup(&rx_union, &tx_union, true);  
 
@@ -30,7 +27,6 @@ void setup() {
 void loop() {
     slave.wait(rx_union.buf, tx_union.buf, BUF_LEN); // block until the transaction comes from master
 
-    digitalWrite(LED, true);
     while (slave.available()) {
         uint8_t command = rx_union.buf[0];
         Serial.printf("SPI Slave Command Received: 0x%x (%d)", command, command);Serial.println("");
@@ -44,9 +40,21 @@ void loop() {
             tx_union.readings.co2 = co2_reading();
             tx_union.readings.battery_voltage = get_battery_voltage();
             tx_union.readings.battery_percent = get_battery_percent(tx_union.readings.battery_voltage);
+            Serial.print("TX SIZE: ");
+            Serial.printf("%d", tx_union.readings); Serial.println("");
+            Serial.println(tx_union.readings.battery_voltage);
         } else if (rx_union.buf[0] == 0xBB) {
             // READINGS HAVE ALREADY BEEN SENT IN SLAVE.WAIT
-            tx_union.buf[0] = 255; // load in ACK symbol to send on 0xAA
+            // tx_union.buf[0] = 255; // load in ACK symbol to send on 0xAA
+            Serial.println("\nReading 3 in 1");
+            tx_union.readings.atm = dispAtmData();
+            tx_union.readings.gps = GPS();
+            tx_union.readings.co2 = co2_reading();
+            tx_union.readings.battery_voltage = get_battery_voltage();
+            tx_union.readings.battery_percent = get_battery_percent(tx_union.readings.battery_voltage);
+            Serial.print("TX SIZE: ");
+            Serial.printf("%d", tx_union.readings); Serial.println("");
+            Serial.println(tx_union.readings.battery_voltage);
         } else {
             // Unidentified command
             tx_union.buf[0] = 254; // load in NACK symbol
@@ -58,6 +66,5 @@ void loop() {
     }
     
     Serial.println("");
-    digitalWrite(LED, false);
 }
 //*/

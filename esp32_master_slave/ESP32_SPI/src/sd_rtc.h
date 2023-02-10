@@ -25,7 +25,7 @@
 #include "RTClib.h"
 #include <data_structs.h>
 
-#define LED 12
+#define R_LED 12
 #define RTC_CS  13
 
 // Initialize RTC
@@ -97,9 +97,9 @@ void sd_save_data() {
   }
 
 void sd_rtc_setup() {
-  pinMode(LED, OUTPUT); // Declare the LED as an output
+  pinMode(R_LED, OUTPUT); // Declare the R_LED as an output
   Serial.print("Initializing SD card...");
-  digitalWrite(LED, HIGH); // Turn the LED on
+  digitalWrite(R_LED, HIGH); // Turn the R_LED on
   // Define CS pin in SD.begin function
 
   uint8_t count = 0;
@@ -112,7 +112,7 @@ void sd_rtc_setup() {
     delay(1000);
   }
   Serial.println("SD Card initialization done.");
-  // digitalWrite(LED, LOW); // Turn the LED off
+  digitalWrite(R_LED, LOW); // Turn the R_LED off
 
   // /*
   Serial.println("Initializing RTC...");
@@ -138,10 +138,12 @@ void sd_rtc_setup() {
   // and the observation period must be in seconds. For accuracy the variation should be observed over about 1 week.
   // Note: any previous calibration should cancelled prior to any new observation period.
   // Example - RTC gaining 43 seconds in 1 week
+  /*
   float drift = 43; // seconds plus or minus over oservation period - set to 0 to cancel previous calibration.
   float period_sec = (7 * 86400);  // total obsevation period in seconds (86400 = seconds in 1 day:  7 days = (7 * 86400) seconds )
   float deviation_ppm = (drift / period_sec * 1000000); //  deviation in parts per million (μs)
   float drift_unit = 4.34; // use with offset mode PCF8523_TwoHours
+  */
   // float drift_unit = 4.069; //For corrections every min the drift_unit is 4.069 ppm (use with offset mode PCF8523_OneMinute)
   // int offset = round(deviation_ppm / drift_unit);
   // rtc.calibrate(PCF8523_TwoHours, offset); // Un-comment to perform calibration once drift (seconds) and observation period (seconds) are correct

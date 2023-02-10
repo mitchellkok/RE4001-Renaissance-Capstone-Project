@@ -7,9 +7,7 @@
 // #define VSPI_SCLK 18
 #define VSPI_CS  0     
 #define BUF_LEN 64
-#define READINGS_DELAY_MS 2000
-#define READINGS_INTERVAL_MS 5000
-
+#define SLAVE_READINGS_DELAY_MS 2000
 
 byte command[BUF_LEN]     = {0x48,0x65,0x6c,0x6c,0x6f,0x2c,0x20,0x57,0x6f,0x72,0x6c,0x64,0x21,0x00};
 byte trigger_cmd[BUF_LEN];

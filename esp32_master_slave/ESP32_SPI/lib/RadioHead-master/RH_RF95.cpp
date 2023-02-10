@@ -4,7 +4,7 @@
 // $Id: RH_RF95.cpp,v 1.18 2018/01/06 23:50:45 mikem Exp $
 
 #include <RH_RF95.h>
-// #define SERIAL_DEBUG 1
+#define SERIAL_DEBUG 1
 
 // interrupt handler and related code must be in RAM on ESP8266,
 // according to issue #46.

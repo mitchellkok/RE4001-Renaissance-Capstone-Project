@@ -16,18 +16,27 @@ float ecsense_so2_reading() {
   SerialPort.write(commandFive, 9);
 
   // Read each of the 9 bytes
+  int start_index = 0;
   if (SerialPort.available() >= 9) {
     Serial.println("");
     Serial.println("ECSENSE SO2:");
-    for(int n=0; n<9; n++) {
+    for(int n=0; n<18; n++) {
         output[n] = SerialPort.read();
         Serial.print(output[n], HEX);
         Serial.print(" ");
+        if (output[n] == 0x86 && output[n-1] == 0xFF) {
+          start_index = n-1;
+        }
+        if (n == (start_index + 8)){
+          break;
+        }
     }
     Serial.println("");
-    float gasValue = (float)((output[6] * 256 + output[7])) / 100;
+    // float gasValue = (float)((output[6] * 256 + output[7])) / 100;
+    float gasValue = (float)((output[start_index+6] * 256 + output[start_index+7])) / 100;
     Serial.println(gasValue);
-    Serial.println("");
+    Serial.println(" ppm");
     return gasValue;
   }  
+  return -1;
 }
