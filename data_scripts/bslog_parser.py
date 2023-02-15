@@ -1,7 +1,7 @@
 import os
 import os.path
 
-FILENAME = "Exp3_Rooftop.csv"
+FILENAME = "Exp3_BSLog.log"
 
 # Set path of csv file (csv file will be saved in the same location laptop2.py)
 path = os.getcwd()
@@ -10,9 +10,11 @@ csv_file = newPath + '/' + FILENAME
 
 # Using readlines()
 file1 = open(csv_file, 'r')
-Lines = file1.readlines()
+lines = file1.readlines()
 
-print(Lines[0:10])
+for i in range(len(lines)):
+    if lines[i] == "":
+        pass
   
 # count = 0
 # # Strips the newline character

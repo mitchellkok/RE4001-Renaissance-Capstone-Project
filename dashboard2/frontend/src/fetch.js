@@ -51,7 +51,8 @@ const DataTable = () => {
               <p style={{color: 'White'}}>Loading...</p>
           ) : (
               <div id="load"> 
-                  <h1 style={{color: 'White', margin:"2rem"}}>{ data.date_time }</h1>
+                  <h1 style={{color: 'White', marginTop:"2rem"}}>LoRa Live Dashboard</h1>
+                  <h4 style={{color: 'White', marginBottom: "2rem"}}> <i> Renaissance Capstone Project </i> </h4>
                   <div className={styles.row}>
                     <div className={styles.midcolumn25}>
                       <div className={styles.column25}>
@@ -80,19 +81,48 @@ const DataTable = () => {
 
                       <div className={styles.column25}>
                         <h3 className={styles.h3_custom} >Others</h3>
-                        <Reading 
-                        parentFunction = {handleShow("Thermocouple", "Thermocouple", "t_t")}
-                        device = 'Thermocouple'
-                        reading1= {data.t_t?.toFixed(2)}
-                        unit1 = '°C'/>
+                          <div className={styles.subrow}>
+                            <div className={styles.subcolumn}>
+                              <Reading 
+                              parentFunction = {handleShow("Master Battery Voltage", "Voltage", "m_bv")}
+                              device = 'Master Bat Voltage'
+                              reading1= {data.m_bv?.toFixed(2)}
+                              unit1 = 'V'/>
 
-                        <Reading 
-                        parentFunction = {handleShow("LoRa RSSI", "RSSI", "rssi")}
-                        device = 'LoRa RSSI'
-                        reading1= {data.rssi?.toFixed(2)}
-                        unit1 = '°C'/>
+                              <Reading 
+                              parentFunction = {handleShow("Slave Bat Voltage", "Voltage", "s_bv")}
+                              device = 'Slave Bat Voltage'
+                              reading1= {data.s_bv?.toFixed(2)}
+                              unit1 = 'V'/>
 
-                      </div>
+                              <Reading 
+                              parentFunction = {handleShow("Thermocouple", "Thermocouple", "t_t")}
+                              device = 'Thermocouple'
+                              reading1= {data.t_t?.toFixed(2)}
+                              unit1 = '°C'/>
+                              </div>
+
+                              <div className={styles.subcolumn}>
+                              <Reading 
+                              parentFunction = {handleShow("Master Bat Percentage", "Percentage", "m_bp")}
+                              device = 'Master Bat Percentage'
+                              reading1= {data.m_bp?.toFixed(2)}
+                              unit1 = '%'/>
+
+                              <Reading 
+                              parentFunction = {handleShow("Slave Bat Percentage", "Percentage", "s_bp")}
+                              device = 'Slave Bat Percentage'
+                              reading1= {data.s_bp?.toFixed(2)}
+                              unit1 = '%'/>
+
+                              <Reading 
+                              parentFunction = {handleShow("LoRa RSSI", "RSSI", "rssi")}
+                              device = 'LoRa RSSI'
+                              reading1= {data.rssi?.toFixed(2)}
+                              unit1 = '°C'/>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                     <div className={styles.midcolumn25}>
                       <div className={styles.column25}>
@@ -113,7 +143,9 @@ const DataTable = () => {
                         device = 'Humidity'
                         reading1= {data.m_h?.toFixed(2)}
                         unit1 = '%rH'/>
-                          
+                        <br></br>
+                        <br></br>
+                        <br></br>
                         <h3 className={styles.h3_custom} >External 3 in 1</h3>
                         <Reading 
                         parentFunction = {handleShow("Master 3 in 1", "Temperature", "s_t")}
@@ -130,7 +162,9 @@ const DataTable = () => {
                         device = 'Humidity'
                         reading1= {data.s_h?.toFixed(2)}
                         unit1 = '%rH'/>
-                        </div>  
+                        <br></br>
+                        <br></br>
+                        </div>
                       </div>
                     </div>
 
@@ -187,19 +221,22 @@ const DataTable = () => {
                         </div>
                       </div>
 
-                      <div className={styles.column50}>
+                      <div className={styles.column50} >
                         <h3 className={styles.h3_custom} >IMU</h3>
                         <div className={styles.subrow}>
-
+                        <div className={styles.subcolumn}>
                         <Reading
-                          style = '14%'
+                          style = '80px'
                           parentFunction = {handleShow("IMU", "Temperature", "imu_tmp")}
                           device = 'Temp'
                           reading1= {data.imu_tmp?.toFixed(2)}
                           unit1 = '°C'/>
+                          </div>
+
+                        <div className={styles.subcolumn}>
 
                         <Reading
-                          style = '14%'
+                          style = '80px'
                           parentFunction = {handleShow("IMU", "Acceleration X", "imu_acx")}
                           device = 'Acc-X'
                           reading1= {data.imu_acx?.toFixed(2)}
@@ -218,7 +255,9 @@ const DataTable = () => {
                           device = 'Acc-Z'
                           reading1= {data.imu_acz?.toFixed(2)}
                           unit1 = ''/>
+                          </div>
 
+                          <div className={styles.subcolumn}>
                           <Reading
                           style = '14%'
                           parentFunction = {handleShow("IMU", "Gyro X", "imu_gyx")}
@@ -239,6 +278,7 @@ const DataTable = () => {
                           device = 'Gyro-Z'
                           reading1= {data.imu_gyz?.toFixed(2)}
                           unit1 = ''/>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -247,6 +287,8 @@ const DataTable = () => {
               </div>
           )}  
       </div>
+
+      <div style={{margin: "0 10px 10px 0", textAlign:"right", color:"white"}}> Copyright 2023 © Julian Yap, Mitchel Kok, Shaun Tieon</div>
 
       <Modal 
         show={modalshow} 
