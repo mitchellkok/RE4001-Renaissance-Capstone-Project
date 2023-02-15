@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 eventlet.monkey_patch()
 
-TESTING = False # Toggle for test mode
+TESTING = True # Toggle for test mode
 test_keys = ['date_time', 'm_t', 'm_p', 'm_h', 's_t', 's_p', 's_h', 'g_so2', 'g_t', 't_t', 'e_so2',
                 'co2', 'gps_sat', 'gps_hdop', 'gps_lat', 'gps_lng', 'gps_alt', 'gps_deg',
                 'gps_mps', 'gps_val', 'imu_tmp', 'imu_acx', 'imu_acy', 'imu_acz', 'imu_gyx',
