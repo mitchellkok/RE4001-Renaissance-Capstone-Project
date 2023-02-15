@@ -22,7 +22,12 @@ test_keys = ['date_time',
             'g_so2',    # Gravity SO2
             'g_t',      # Gravity Temperature
             't_t',      # Thermocouple Temperature
+            't_a',      # Thermocouple Ambient Temp
+            't_adc',    # Thermocouple ADC
             'e_so2',    # ECSense SO2
+            'e_tmp',    # ECSense Temperature
+            'e_hum',    # ECSense Humidity
+            'e_so2_db', # ECSense Debug Info
             'co2',      # CO2
             'gps_sat',  # GPS Satellites
             'gps_hdop', # GPS HDOP
