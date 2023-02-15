@@ -141,12 +141,12 @@
     // gps_readings.readings.mps =         (float) gps.speed.mps();
     // gps_readings.readings.hdop =        (float) gps.hdop.value();
     gps_readings.readings.satellites =  (float) 10;
-    gps_readings.readings.lat =         (float) 11;
-    gps_readings.readings.lng =         (float) 12;
+    gps_readings.readings.lat =         (float) 11.56;
+    gps_readings.readings.lng =         (float) 12.35;
     gps_readings.readings.meters =      (float) 100;
     gps_readings.readings.deg =         (float) 10;
     gps_readings.readings.mps =         (float) 5;
-    gps_readings.readings.hdop =   
+    gps_readings.readings.hdop =        (float) 5;
     return gps_readings;
   }
 
