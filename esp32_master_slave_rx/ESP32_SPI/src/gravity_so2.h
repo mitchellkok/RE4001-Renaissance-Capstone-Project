@@ -14,12 +14,10 @@ void gravity_so2_setup() {
     delay(1000);
     break;
   }
-  Serial.println("The device is connected successfully!");
-
   gas.changeAcquireMode(gas.PASSIVITY);
   delay(1000);
-
   gas.setTempCompensation(gas.OFF);
+  Serial.println("Gravity SO2 setup done!");
 }
 
 gravity_so2_union gravity_so2() {

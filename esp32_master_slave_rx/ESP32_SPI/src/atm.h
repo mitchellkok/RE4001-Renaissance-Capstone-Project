@@ -23,7 +23,7 @@ void init3in1(){
   }
 
   ms8607.setHumidityResolution(MS8607_HUMIDITY_RESOLUTION_OSR_8b);
-  Serial.print("Humidity resolution set to ");
+  Serial.print("\tHumidity resolution set to ");
   switch (ms8607.getHumidityResolution()){
     case MS8607_HUMIDITY_RESOLUTION_OSR_12b: Serial.println("12-bit"); break;
     case MS8607_HUMIDITY_RESOLUTION_OSR_11b: Serial.println("11-bit"); break;
@@ -31,7 +31,7 @@ void init3in1(){
     case MS8607_HUMIDITY_RESOLUTION_OSR_8b: Serial.println("8-bit"); break;
   }
   // ms8607.setPressureResolution(MS8607_PRESSURE_RESOLUTION_OSR_4096);
-  Serial.print("Pressure and Temperature resolution set to ");
+  Serial.print("\tPressure and Temperature resolution set to ");
   switch (ms8607.getPressureResolution()){
     case MS8607_PRESSURE_RESOLUTION_OSR_256: Serial.println("256"); break;
     case MS8607_PRESSURE_RESOLUTION_OSR_512: Serial.println("512"); break;
@@ -46,7 +46,7 @@ void init3in1(){
 atm_union dispAtmData(){
     sensors_event_t temp, pressure, humidity; // 36 byte data struct
     ms8607.getEvent(&pressure, &temp, &humidity);
-    Serial.println("Master 3 in 1 readings: ");
+    Serial.println("\nMaster 3 in 1 readings: ");
     Serial.print("Temperature: ");Serial.print(temp.temperature); Serial.println(" degrees C");
     Serial.print("Pressure: ");Serial.print(pressure.pressure); Serial.println(" hPa");
     Serial.print("Humidity: ");Serial.print(humidity.relative_humidity); Serial.println(" %rH");

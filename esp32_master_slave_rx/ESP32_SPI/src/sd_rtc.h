@@ -50,7 +50,7 @@ datetime_union get_datetime() {
 }
 
 // Function to save data into SD card, should pass in parameters of sensor data
-void sd_save_data() {
+void sd_save_data(lora_union *data) {
     // Get current Date Time
     DateTime now = rtc.now();
     Serial.print(now.year(), DEC); // uint16_t
@@ -68,25 +68,68 @@ void sd_save_data() {
     Serial.print(now.second(), DEC); // uint8_t
     Serial.println();
 
-    myFile = SD.open("/test4.txt", FILE_APPEND);
+    lora_union tx = *data;
+    myFile = SD.open("/test.txt", FILE_APPEND);
     if (myFile) {
       // Writes raw data to SD Card
-      myFile.print("testing 1, 2, 3");
+      // myFile.print("testing 1, 2, 3");
 
-      // Writes corresponding timestamp to SD Card
+      // Writes corresponding timestamp to SD Card --> Time of writing
       myFile.print(now.year(), DEC);
-      myFile.print('/');
-      myFile.print(now.month(), DEC);
-      myFile.print('/');
-      myFile.print(now.day(), DEC);
-      myFile.print(" (");
-      myFile.print(daysOfTheWeek[now.dayOfTheWeek()]);
-      myFile.print(") ");
-      myFile.print(now.hour(), DEC);
-      myFile.print(':');
-      myFile.print(now.minute(), DEC);
-      myFile.print(':');
-      myFile.print(now.second(), DEC);
+      myFile.print('/'); myFile.print(now.month(), DEC);
+      myFile.print('/'); myFile.print(now.day(), DEC);
+      myFile.print(" "); myFile.print(now.hour(), DEC);
+      myFile.print(':'); myFile.print(now.minute(), DEC);
+      myFile.print(':'); myFile.print(now.second(), DEC);
+
+      // myFile.print(", "); myFile.print(tx.data_struct.datetime);
+      myFile.print(", "); myFile.print(tx.data_struct.gravity_so2.fl[0]); // gas conc
+      myFile.print(", "); myFile.print(tx.data_struct.gravity_so2.fl[1]); // temp
+
+      myFile.print(", "); myFile.print(tx.data_struct.atm_master.fl[0]);  // temp
+      myFile.print(", "); myFile.print(tx.data_struct.atm_master.fl[1]);  // pressure
+      myFile.print(", "); myFile.print(tx.data_struct.atm_master.fl[2]);  // humidity
+
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[0]);     // temp
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[1]);     // accx
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[2]);     // accy
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[3]);     // accz
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[4]);     // gyrx
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[5]);     // gyry
+      myFile.print(", "); myFile.print(tx.data_struct.imu.fl[6]);     // gyrz
+
+      myFile.print(", "); myFile.print(tx.data_struct.thermocouple.fl[0]);  // thermocouple
+      myFile.print(", "); myFile.print(tx.data_struct.thermocouple.fl[1]);  // ambient
+      myFile.print(", "); myFile.print(tx.data_struct.thermocouple.fl[2]);  // adc
+
+      myFile.print(", "); myFile.print(tx.data_struct.ecsense_so2.readings.ecsense_so2);  // gas conc
+      myFile.print(", "); myFile.print(tx.data_struct.ecsense_so2.readings.ecsense_temp); // temp
+      myFile.print(", "); myFile.print(tx.data_struct.ecsense_so2.readings.ecsense_hum);  // humidity
+      myFile.print(','); for (int i=0; i<(sizeof(tx.data_struct.ecsense_so2.readings.full_reading)/sizeof(uint8_t)); i++){
+        myFile.print(", "); myFile.print(tx.data_struct.ecsense_so2.readings.full_reading[i]);  // debug info
+      }
+
+      myFile.print(", "); myFile.print(tx.data_struct.atm_slave.fl[0]);     // temp
+      myFile.print(", "); myFile.print(tx.data_struct.atm_slave.fl[1]);     // pressure
+      myFile.print(", "); myFile.print(tx.data_struct.atm_slave.fl[2]);     // humidity
+
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.satellites);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.hdop);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.lat);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.lng);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.meters);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.deg);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.mps);
+      myFile.print(", "); myFile.print(tx.data_struct.gps_slave.readings.value);
+
+      myFile.print(", "); myFile.print(tx.data_struct.co2); // co2 ppm
+      myFile.print(", "); myFile.print(tx.data_struct.s_battery_adc);
+      myFile.print(", "); myFile.print(tx.data_struct.s_battery_voltage);
+      myFile.print(", "); myFile.print(tx.data_struct.s_battry_percent);
+      myFile.print(", "); myFile.print(tx.data_struct.m_battery_adc);
+      myFile.print(", "); myFile.print(tx.data_struct.m_battery_voltage);
+      myFile.print(", "); myFile.print(tx.data_struct.m_battry_percent);
+      myFile.print(", "); myFile.print(tx.data_struct.tx_rssi);
       myFile.println();
       Serial.println("Finished writing..");
     }
@@ -96,14 +139,30 @@ void sd_save_data() {
     myFile.close();
   }
 
-void sd_rtc_setup() {
+void sd_mount() {
+  digitalWrite(R_LED, HIGH); // Turn the R_LED on
+  // Define CS pin in SD.begin function
+  if (!SD.begin(RTC_CS, SPI, 1000000)) {  // pin 13 cs
+    Serial.println("SD Card mounting failed!");
+  } else {
+    Serial.println("SD Card mounted.");
+  }
+  digitalWrite(R_LED, LOW); // Turn the R_LED off
+}
+
+void sd_unmount() {
+  SD.end();
+  Serial.println("SD Card unmounted.");
+}
+
+void sd_setup() {
   pinMode(R_LED, OUTPUT); // Declare the R_LED as an output
-  Serial.print("Initializing SD card...");
+  Serial.println("Initializing SD card...");
   digitalWrite(R_LED, HIGH); // Turn the R_LED on
   // Define CS pin in SD.begin function
 
-  uint8_t count = 0;
-  while (!SD.begin(RTC_CS)) {  // pin 13 cs
+  uint8_t count = 0; 
+  while (!SD.begin(RTC_CS, SPI, 1000000)) {  // pin 13 cs
     if (count++ == 5) {
       Serial.println("SD Card initialization failed! Moving on...");
       break;
@@ -111,19 +170,27 @@ void sd_rtc_setup() {
     Serial.println("SD Card initialization failed!");
     delay(1000);
   }
-  Serial.println("SD Card initialization done.");
+  if (count < 5) {
+    Serial.println("SD Card initialization done.");
+  }
+  sd_unmount();
+  delay(20);
   digitalWrite(R_LED, LOW); // Turn the R_LED off
+  Serial.println("SD Card setup done!");
+}
 
-  // /*
-  Serial.println("Initializing RTC...");
+void rtc_setup() {
+  Serial.println("\nInitializing RTC...");
   if (!rtc.begin()) {
-      Serial.println("Couldn't find RTC");
-      Serial.flush();
-      // while (1) delay(10);
-    }
-
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+  } else {
+    Serial.println("RTC initialized\n");
+  }
   rtc.start();
-  Serial.println("RTC Started.\n");
+}
+
+
   // */
 
 
@@ -149,7 +216,6 @@ void sd_rtc_setup() {
   // rtc.calibrate(PCF8523_TwoHours, offset); // Un-comment to perform calibration once drift (seconds) and observation period (seconds) are correct
   // rtc.calibrate(PCF8523_TwoHours, 0); // Un-comment to cancel previous calibrations
 
-}
 
 // void loop() {
 //   // nothing happens after setup

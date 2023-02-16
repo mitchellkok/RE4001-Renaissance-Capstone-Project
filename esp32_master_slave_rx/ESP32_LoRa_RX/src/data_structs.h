@@ -47,6 +47,16 @@
         uint8_t buf[8];
     };
 
+    union ecsense_so2_union {
+        struct readings {
+            uint8_t full_reading[13];
+            float ecsense_so2;
+            float ecsense_temp;
+            float ecsense_hum;
+        } readings;
+        uint8_t buf[25];
+    };
+
     union lora_union {
         struct data_struct {
             uint8_t start_byte;
@@ -57,7 +67,7 @@
             gps_union gps_slave;
             imu_union imu;
             thermo_union thermocouple;
-            float ecsense_so2;
+            ecsense_so2_union ecsense_so2;
             int co2;
             int m_battery_adc;
             float m_battery_voltage;
@@ -84,7 +94,12 @@
         Serial.print("   GravitySO2: "); Serial.println(rx.data_struct.gravity_so2.fl[0]);
         Serial.print("   GravityTemp: "); Serial.println(rx.data_struct.gravity_so2.fl[1]);
         Serial.println("ecsense so2:");
-        Serial.print("   ECSenseSO2: "); Serial.println(rx.data_struct.ecsense_so2);
+        Serial.print("   ECSenseSO2: "); 
+        for (int n=0; n<9; n++) {
+            Serial.print(rx.data_struct.ecsense_so2.readings.full_reading[n], HEX); Serial.print(" "); 
+        }
+        Serial.println("");
+        Serial.print("   ECSenseSO2: "); Serial.println(rx.data_struct.ecsense_so2.readings.ecsense_so2);
         Serial.println("co2:");
         Serial.print("   CO2: "); Serial.println(rx.data_struct.co2);
         Serial.println("atm master:");

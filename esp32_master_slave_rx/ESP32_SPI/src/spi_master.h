@@ -15,6 +15,7 @@ byte request_cmd[BUF_LEN];
 
 void print_rxtx(data_union rx, data_union tx) {
   // Master does TX then RX
+  Serial.println("\nSETTING UP SPI BUFFER: ");
   Serial.println("TX BUFFER: ");
   for(int i=0;i<BUF_LEN;i++){
     Serial.print(tx.buf[i], HEX);
@@ -32,8 +33,6 @@ void print_rxtx(data_union rx, data_union tx) {
 void spi_setup() {
   SPI.begin();                            //Begins the SPI commnuication
   SPI.setClockDivider(SPI_CLOCK_DIV8);    //Sets clock for SPI communication at 1 MHz
-  pinMode(VSPI_CS, OUTPUT);
-  digitalWrite(VSPI_CS, HIGH);
 
   trigger_cmd[0] = 0xAA;
   request_cmd[0] = 0xBB;

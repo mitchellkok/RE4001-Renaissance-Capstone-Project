@@ -39,22 +39,22 @@ void lora_setup()
   digitalWrite(RFM95_RST, HIGH);
   delay(20);
 
-  Serial.println("Feather LoRa TX Test!");
+  Serial.println("\nFeather LoRa Test!");
   while (!rf95.init()) {
-    Serial.println("LoRa radio init failed");
+    Serial.println("\tLoRa radio init failed");
     Serial.println("Uncomment '#define SERIAL_DEBUG' in RH_RF95.cpp for detailed debug info");
     delay(2000);
   }
   pinMode(RFM95_CS, OUTPUT);
   digitalWrite(RFM95_CS, HIGH);
-  Serial.println("LoRa radio init OK!");
+  Serial.println("\tLoRa radio init OK!");
   // sei(); // resume interrupts
 
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
   if (!rf95.setFrequency(RF95_FREQ)) {
-    Serial.println("setFrequency failed");
+    Serial.println("\tsetFrequency failed");
   }
-  Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
+  Serial.print("\tSet Freq to: "); Serial.println(RF95_FREQ);
   
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
@@ -62,6 +62,7 @@ void lora_setup()
   // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then 
   // you can set transmitter powers from 5 to 23 dBm:
   rf95.setTxPower(23, false);
+  Serial.println("LoRa setup done!");
 }
 
 int16_t packetnum = 0;  // packet counter, we increment per xmission
@@ -74,7 +75,7 @@ int16_t lora(uint8_t* tx)
 
   Serial.println("Waiting for packet to complete..."); 
   delay(10);
-  rf95.waitPacketSent(2000);  // 2000ms timeout
+  rf95.waitPacketSent(1000);  // 2000ms timeout
   // Now wait for a reply
   uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
   uint8_t len = sizeof(buf);

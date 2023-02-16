@@ -26,13 +26,13 @@ void thermo_setup() {
 
     /* Initialise the driver with THERMOCOUPLE_I2C_ADDRESS and the default I2C bus. */
     if (! mcp.begin(THERMOCOUPLE_I2C_ADDRESS)) {
-        Serial.println("Thermocouple sensor not found. Check wiring!");
+        Serial.println("\nThermocouple sensor not found. Check wiring!");
     }
-  Serial.println("Found MCP9600!");
+  Serial.println("\nThermocouple MCP9600 Found!");
 
   // Thermocouple setup
   mcp.setADCresolution(MCP9600_ADCRESOLUTION_18);
-  Serial.print("ADC resolution set to ");
+  Serial.print("\tADC resolution set to ");
   switch (mcp.getADCresolution()) {
     case MCP9600_ADCRESOLUTION_18:   Serial.print("18"); break;
     case MCP9600_ADCRESOLUTION_16:   Serial.print("16"); break;
@@ -42,7 +42,7 @@ void thermo_setup() {
   Serial.println(" bits");
 
   mcp.setThermocoupleType(MCP9600_TYPE_K);
-  Serial.print("Thermocouple type set to ");
+  Serial.print("\tThermocouple type set to ");
   switch (mcp.getThermocoupleType()) {
     case MCP9600_TYPE_K:  Serial.print("K"); break;
     case MCP9600_TYPE_J:  Serial.print("J"); break;
@@ -56,29 +56,29 @@ void thermo_setup() {
   Serial.println(" type");
 
   mcp.setFilterCoefficient(3);
-  Serial.print("Filter coefficient value set to: ");
+  Serial.print("\tFilter coefficient value set to: ");
   Serial.println(mcp.getFilterCoefficient());
 
   mcp.setAlertTemperature(1, 30);
-  Serial.print("Alert #1 temperature set to ");
+  Serial.print("\tAlert #1 temperature set to ");
   Serial.println(mcp.getAlertTemperature(1));
   mcp.configureAlert(1, true, true);  // alert 1 enabled, rising temp
 
   mcp.enable(true);
-
+  Serial.println("Thermocouple setup done!");
 }
 
 
 void imu_setup() {
   // IMU set up
   // Check for LSM module
-    if (!sox.begin_I2C()) {
-        Serial.println("SOX not initialised");
-    }
+  if (!sox.begin_I2C()) {
+      Serial.println("\nIMU LSM6DSOX  not initialised");
+  }
 
-  Serial.println("LSM6DSOX Found!");
+  Serial.println("\nIMU LSM6DSOX Found!");
     // sox.setAccelRange(LSM6DS_ACCEL_RANGE_2_G);
-  Serial.print("Accelerometer range set to: ");
+  Serial.print("\tAccelerometer range set to: ");
   switch (sox.getAccelRange()) {
   case LSM6DS_ACCEL_RANGE_2_G:
     Serial.println("+-2G");
@@ -95,7 +95,7 @@ void imu_setup() {
   }
 
   // sox.setGyroRange(LSM6DS_GYRO_RANGE_250_DPS );
-  Serial.print("Gyro range set to: ");
+  Serial.print("\tGyro range set to: ");
   switch (sox.getGyroRange()) {
   case LSM6DS_GYRO_RANGE_125_DPS:
     Serial.println("125 degrees/s");
@@ -117,7 +117,7 @@ void imu_setup() {
   }
 
   // sox.setAccelDataRate(LSM6DS_RATE_12_5_HZ);
-  Serial.print("Accelerometer data rate set to: ");
+  Serial.print("\tAccelerometer data rate set to: ");
   switch (sox.getAccelDataRate()) {
   case LSM6DS_RATE_SHUTDOWN:
     Serial.println("0 Hz");
@@ -155,7 +155,7 @@ void imu_setup() {
   }
 
   // sox.setGyroDataRate(LSM6DS_RATE_12_5_HZ);
-  Serial.print("Gyro data rate set to: ");
+  Serial.print("\tGyro data rate set to: ");
   switch (sox.getGyroDataRate()) {
   case LSM6DS_RATE_SHUTDOWN:
     Serial.println("0 Hz");
@@ -191,6 +191,7 @@ void imu_setup() {
     Serial.println("6.66 KHz");
     break;
   }
+  Serial.println("IMU setup done!");
 }
 
 thermo_union thermo() {

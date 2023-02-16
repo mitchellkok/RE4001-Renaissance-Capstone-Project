@@ -45,6 +45,16 @@
         uint8_t buf[28];
     };
 
+    union ecsense_so2_union {
+        struct readings {
+            uint8_t full_reading[13];
+            float ecsense_so2;
+            float ecsense_temp;
+            float ecsense_hum;
+        } readings;
+        uint8_t buf[25];
+    };
+
     union data_union {  // SPI
         struct readings {
             atm_union atm;
@@ -67,7 +77,7 @@
             gps_union gps_slave;
             imu_union imu;
             thermo_union thermocouple;
-            float ecsense_so2;
+            ecsense_so2_union ecsense_so2;
             int co2;
             int m_battery_adc;
             float m_battery_voltage;

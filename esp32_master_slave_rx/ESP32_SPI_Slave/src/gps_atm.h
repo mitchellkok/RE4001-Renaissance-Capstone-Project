@@ -133,20 +133,20 @@
     Serial.println();
 
     gps_union gps_readings;
-    // gps_readings.readings.satellites =  (float) gps.satellites.value();
-    // gps_readings.readings.lat =         (float) gps.location.lat();
-    // gps_readings.readings.lng =         (float) gps.location.lng();
-    // gps_readings.readings.meters =      (float) gps.altitude.meters();
-    // gps_readings.readings.deg =         (float) gps.course.deg();
-    // gps_readings.readings.mps =         (float) gps.speed.mps();
-    // gps_readings.readings.hdop =        (float) gps.hdop.value();
-    gps_readings.readings.satellites =  (float) 10;
-    gps_readings.readings.lat =         (float) 11.56;
-    gps_readings.readings.lng =         (float) 12.35;
-    gps_readings.readings.meters =      (float) 100;
-    gps_readings.readings.deg =         (float) 10;
-    gps_readings.readings.mps =         (float) 5;
-    gps_readings.readings.hdop =        (float) 5;
+    gps_readings.readings.satellites =  (float) gps.satellites.value();
+    gps_readings.readings.lat =         (float) gps.location.lat();
+    gps_readings.readings.lng =         (float) gps.location.lng();
+    gps_readings.readings.meters =      (float) gps.altitude.meters();
+    gps_readings.readings.deg =         (float) gps.course.deg();
+    gps_readings.readings.mps =         (float) gps.speed.mps();
+    gps_readings.readings.hdop =        (float) gps.hdop.value();
+    // gps_readings.readings.satellites =  (float) 10;
+    // gps_readings.readings.lat =         (float) 11.56;
+    // gps_readings.readings.lng =         (float) 12.35;
+    // gps_readings.readings.meters =      (float) 100;
+    // gps_readings.readings.deg =         (float) 10;
+    // gps_readings.readings.mps =         (float) 5;
+    // gps_readings.readings.hdop =        (float) 5;
     return gps_readings;
   }
 
@@ -210,7 +210,7 @@
         break;
       }
     }
-
+    // gps_readings = displayNMEAMessage(); // For testing
     return gps_readings;
   }
 

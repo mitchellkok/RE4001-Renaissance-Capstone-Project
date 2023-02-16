@@ -12,7 +12,7 @@ AsyncWebServer server(80);
 AsyncEventSource events("/events");
  
 StaticJsonDocument<500> jsonDocument;
-char buffer[1280];
+char buffer[2560];
 
 void setup_http() {     
   // Connect to Wi-Fi network with SSID and password
@@ -39,7 +39,8 @@ void add_json_object(char *tag, float value) {
 }
 
 char* getData(lora_union *rx) {
-    Serial.println("###### getting data ######");
+    Serial.println("");
+    Serial.println("###### packing data ######");
     jsonDocument.clear();
 
     jsonDocument["date_year"] = rx->data_struct.datetime.datetime.year;
@@ -61,8 +62,13 @@ char* getData(lora_union *rx) {
     jsonDocument["g_t"] = rx->data_struct.gravity_so2.fl[1];
 
     jsonDocument["t_t"] = rx->data_struct.thermocouple.fl[0];
+    jsonDocument["t_a"] = rx->data_struct.thermocouple.fl[1];
+    jsonDocument["t_adc"] = rx->data_struct.thermocouple.fl[2];
 
-    jsonDocument["e_so2"] = rx->data_struct.ecsense_so2;
+    jsonDocument["e_so2"] = rx->data_struct.ecsense_so2.readings.ecsense_so2;
+    jsonDocument["e_tmp"] = rx->data_struct.ecsense_so2.readings.ecsense_temp;
+    jsonDocument["e_hum"] = rx->data_struct.ecsense_so2.readings.ecsense_hum;
+    jsonDocument["e_so2_db"] = rx->data_struct.ecsense_so2.readings.full_reading; // CHECK THIS LINE
 
     jsonDocument["co2"] = rx->data_struct.co2;
 
@@ -74,7 +80,7 @@ char* getData(lora_union *rx) {
     jsonDocument["gps_lat"] = rx->data_struct.gps_slave.readings.lat;
     jsonDocument["gps_lng"] = rx->data_struct.gps_slave.readings.lng;
     jsonDocument["gps_alt"] = rx->data_struct.gps_slave.readings.meters;
-    // jsonDocument["gps_deg"] = rx->data_struct.gps_slave.readings.deg;
+    jsonDocument["gps_deg"] = rx->data_struct.gps_slave.readings.deg;
     jsonDocument["gps_mps"] = rx->data_struct.gps_slave.readings.mps;
     jsonDocument["gps_val"] = rx->data_struct.gps_slave.readings.value;
 
@@ -98,5 +104,7 @@ char* getData(lora_union *rx) {
 void sse_getData(lora_union *rx) {
     char* buffer = getData(rx);
     events.send(buffer,NULL,millis());
+    Serial.println("###### data sent ######");
+    Serial.println("");
 }
  

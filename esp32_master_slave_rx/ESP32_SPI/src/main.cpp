@@ -11,10 +11,11 @@
 #include <batt.h>
 
 #define SDCARD  1
+#define RTC     1
 #define LORA    1
 #define SLAVE   1
 
-#define READINGS_INTERVAL_MS 5000
+#define READINGS_INTERVAL_MS 10000
 #define STARTBYTE 0xAA
 #define Y_LED 4
 #define I2C_SDA 21
@@ -25,18 +26,32 @@ data_union rx_union;
 int16_t last_rssi = 0;
 unsigned long last_millis = 0;
 
+void pre_spi() { // Function to keep SPI CS pins high until SD Card inits
+  // ESP32 Slave
+  pinMode(VSPI_CS, OUTPUT);
+  digitalWrite(VSPI_CS, HIGH);
+  // LoRa
+  pinMode(RFM95_CS, OUTPUT);
+  digitalWrite(RFM95_CS, HIGH);
+}
+
 void setup (void)
 {
   pinMode(Y_LED, OUTPUT); // Declare the LED as an output
   digitalWrite(Y_LED, HIGH); // Turn the LED on
   Serial.begin(9600);
+  Serial.println("\n");
+  Serial.println("\n-----------------");
+  Serial.println("SETUP STARTING\n");
+
   Wire.begin(I2C_SDA, I2C_SCL);
 
-  spi_setup();
-  buffer_setup(&rx_union, &tx_union, true);  
-
+  pre_spi();
   #ifdef SDCARD
-    sd_rtc_setup();
+    sd_setup();
+  #endif  
+  #ifdef RTC
+    rtc_setup();
   #endif
   
   init3in1();
@@ -48,9 +63,13 @@ void setup (void)
   #ifdef LORA
     lora_setup();
   #endif
+
+  spi_setup();  // for esp32 slave
+  buffer_setup(&rx_union, &tx_union, true);  
  
   digitalWrite(Y_LED, LOW); // Turn the LED off      
-  Serial.println("Master Ready\n");       
+  Serial.println("\nMaster Ready"); 
+  Serial.println("-----------------");      
 }
 
 void loop(void)
@@ -59,8 +78,10 @@ void loop(void)
   unsigned long curr_millis = millis();
   if (curr_millis >= last_millis + READINGS_INTERVAL_MS) {
     last_millis = curr_millis;
+    Serial.println("\n-----------------");
+    Serial.println("READINGS STARTING\n");
 
-    #ifdef SDCARD
+    #ifdef RTC
       datetime_union datetime = get_datetime();
     #endif
     int m_batt_adc = get_master_adc_reading();
@@ -75,8 +96,10 @@ void loop(void)
     thermo_union thermo_readings = thermo();
     atm_union atm_master = dispAtmData();
     gravity_so2_union gravity_so2_readings = gravity_so2();
-    float ecsense_so2 = ecsense_so2_reading();
-
+    // ecsense_so2_union ecsense_so2_readings = ecsense_so2_reading();
+    ecsense_so2_union ecsense_so2_readings = ecsense_so2_reading_full();
+    
+    Serial.println("\nREADINGS DONE! WAITING FOR SLAVE");
     #ifdef SLAVE
       cli();  // stop interrupts
       trigger_cmd[1]++; // counter to track trigger number
@@ -94,9 +117,15 @@ void loop(void)
       // float s_batt_voltage = rx_union.readings.battery_voltage;
       // float s_batt_percent = rx_union.readings.battery_percent;
     
-      Serial.println("Slave Battery Readings:"); Serial.println(rx_union.readings.battery_voltage);
+      Serial.println("Slave Battery Readings:"); 
+      Serial.printf("ADC: %d", s_batt_adc);Serial.println("");
       Serial.printf("Voltage: %f", s_batt_voltage);Serial.println("");
       Serial.printf("Percentage: %f%%", s_batt_percent);Serial.println("");
+      Serial.println("");
+      Serial.println("Master Battery Readings:"); 
+      Serial.printf("ADC: %d", m_batt_adc);Serial.println("");
+      Serial.printf("Voltage: %f", m_batt_voltage);Serial.println("");
+      Serial.printf("Percentage: %f%%", m_batt_percent);Serial.println("");
       Serial.println("");
       Serial.println("Slave 3 in 1 Readings:");
       Serial.printf("Temperature: %f", atm_slave.fl[0]);Serial.println("");
@@ -122,14 +151,14 @@ void loop(void)
     Serial.println("");
     lora_union tx;
     tx.data_struct.start_byte = STARTBYTE;
-    #ifdef SDCARD
+    #ifdef RTC
       tx.data_struct.datetime = datetime;
     #endif
     tx.data_struct.gravity_so2 = gravity_so2_readings;
     tx.data_struct.atm_master = atm_master;
     tx.data_struct.imu = imu_readings;
     tx.data_struct.thermocouple = thermo_readings;
-    tx.data_struct.ecsense_so2 = ecsense_so2;
+    tx.data_struct.ecsense_so2 = ecsense_so2_readings;
     #ifdef SLAVE
       tx.data_struct.atm_slave = atm_slave;
       tx.data_struct.gps_slave = gps_slave;
@@ -147,14 +176,20 @@ void loop(void)
       Serial.printf("SIZEOF LORA TX = %d Bytes", sizeof(tx));Serial.println("");
       last_rssi = lora(tx.buf);
       delay(20);
-      digitalWrite(Y_LED, LOW); // Turn the LED off 
-      get_battery_voltage(s_batt_adc); // check battery again     
+      digitalWrite(Y_LED, LOW); // Turn the LED off  
     #endif 
 
     Serial.println("");
     #ifdef SDCARD
+      pre_spi();
       delay(20);
-      sd_save_data();
+      sd_mount();
+      delay(20);
+      sd_save_data(&tx);
+      delay(20);
+      sd_unmount();
     #endif
+    Serial.println("\nLOOP DONE!");
+    Serial.println("-----------------\n");
   }
 }
