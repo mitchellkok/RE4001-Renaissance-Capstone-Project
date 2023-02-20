@@ -11,7 +11,8 @@ const char *PWD = "Rcapstone";
 AsyncWebServer server(80);
 AsyncEventSource events("/events");
  
-StaticJsonDocument<500> jsonDocument;
+StaticJsonDocument<1280> jsonDocument;
+StaticJsonDocument<20> jsonBuffer;
 char buffer[2560];
 
 void setup_http() {     
@@ -42,6 +43,10 @@ char* getData(lora_union *rx) {
     Serial.println("");
     Serial.println("###### packing data ######");
     jsonDocument.clear();
+    jsonBuffer.clear();
+    JsonArray array = jsonBuffer.to<JsonArray>();
+    
+    jsonDocument["m_num"] = rx->data_struct.master_reading_num;
 
     jsonDocument["date_year"] = rx->data_struct.datetime.datetime.year;
     jsonDocument["date_month"] = rx->data_struct.datetime.datetime.b[0];
@@ -65,12 +70,16 @@ char* getData(lora_union *rx) {
     jsonDocument["t_a"] = rx->data_struct.thermocouple.fl[1];
     jsonDocument["t_adc"] = rx->data_struct.thermocouple.fl[2];
 
+    jsonDocument["e_cnt"] = rx->data_struct.ecsense_so2.readings.byte_count;
     jsonDocument["e_so2"] = rx->data_struct.ecsense_so2.readings.ecsense_so2;
     jsonDocument["e_tmp"] = rx->data_struct.ecsense_so2.readings.ecsense_temp;
     jsonDocument["e_hum"] = rx->data_struct.ecsense_so2.readings.ecsense_hum;
-    jsonDocument["e_so2_db"] = rx->data_struct.ecsense_so2.readings.full_reading; // CHECK THIS LINE
+    for (int i=0; i<20; i++) { array.add(rx->data_struct.ecsense_so2.readings.full_reading[i]); }
+    jsonDocument["e_so2_db"] = array;
+    // jsonDocument["e_so2_db"] = rx->data_struct.ecsense_so2.readings.full_reading; // CHECK THIS LINE
 
     jsonDocument["co2"] = rx->data_struct.co2;
+    jsonDocument["s_num"] = rx->data_struct.slave_reading_num;
 
     jsonDocument["tx_rssi"] = rx->data_struct.tx_rssi;
     jsonDocument["rx_rssi"] = rx->data_struct.rx_rssi;

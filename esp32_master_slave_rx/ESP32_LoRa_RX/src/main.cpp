@@ -82,9 +82,9 @@ void loop()
     if (rf95.recv(rx.buf, &len))
     {
       digitalWrite(LED, HIGH);
-      Serial.print("\nRSSI: ");
-      Serial.println(rf95.lastRssi(), DEC);
       rx.data_struct.rx_rssi = rf95.lastRssi();
+      Serial.print("\nRSSI: ");
+      Serial.println(rx.data_struct.rx_rssi, DEC);
       
       Serial.print("Received LEN = ");
       Serial.println(sizeof(rx.buf));

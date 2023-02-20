@@ -47,16 +47,18 @@
 
     union ecsense_so2_union {
         struct readings {
-            uint8_t full_reading[13];
+            uint32_t byte_count;
+            uint8_t full_reading[16];
             float ecsense_so2;
             float ecsense_temp;
             float ecsense_hum;
         } readings;
-        uint8_t buf[25];
+        uint8_t buf[32];
     };
 
     union data_union {  // SPI
         struct readings {
+            uint32_t number;
             atm_union atm;
             gps_union gps;
             int co2;
@@ -70,6 +72,7 @@
     union lora_union {
         struct data_struct {
             uint8_t start_byte;
+            int master_reading_num;
             datetime_union datetime;
             gravity_so2_union gravity_so2;
             atm_union atm_master;
@@ -78,6 +81,7 @@
             imu_union imu;
             thermo_union thermocouple;
             ecsense_so2_union ecsense_so2;
+            uint32_t slave_reading_num;
             int co2;
             int m_battery_adc;
             float m_battery_voltage;

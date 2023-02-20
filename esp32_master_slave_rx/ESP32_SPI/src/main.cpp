@@ -10,12 +10,14 @@
 #include <data_structs.h>
 #include <batt.h>
 
+// Compiler options
 #define SDCARD  1
 #define RTC     1
 #define LORA    1
 #define SLAVE   1
 
-#define READINGS_INTERVAL_MS 10000
+// Constants
+#define READINGS_INTERVAL_MS 10000  // minimum is around 10000ms
 #define STARTBYTE 0xAA
 #define Y_LED 4
 #define I2C_SDA 21
@@ -47,6 +49,7 @@ void setup (void)
   Wire.begin(I2C_SDA, I2C_SCL);
 
   pre_spi();
+  delay(100);
   #ifdef SDCARD
     sd_setup();
   #endif  
@@ -74,49 +77,49 @@ void setup (void)
 
 void loop(void)
 {
-  // remaining delay before triggering readings
   unsigned long curr_millis = millis();
-  if (curr_millis >= last_millis + READINGS_INTERVAL_MS) {
+  if (curr_millis >= last_millis + READINGS_INTERVAL_MS) {  // remaining delay before triggering readings
     last_millis = curr_millis;
     Serial.println("\n-----------------");
-    Serial.println("READINGS STARTING\n");
+    Serial.println("READINGS STARTING");
+    Serial.print("Slave Reading Number:"); Serial.print(trigger_cmd[1]);Serial.println("\n");
 
     #ifdef RTC
       datetime_union datetime = get_datetime();
     #endif
     int m_batt_adc = get_master_adc_reading();
-    float m_batt_voltage = get_battery_voltage(m_batt_adc);
+    float m_batt_voltage = get_master_battery_voltage(m_batt_adc);
     float m_batt_percent = get_battery_percent(m_batt_voltage);
 
     int s_batt_adc = get_slave_adc_reading();
-    float s_batt_voltage = get_battery_voltage(s_batt_adc);
+    float s_batt_voltage = get_slave_battery_voltage(s_batt_adc);
     float s_batt_percent = get_battery_percent(s_batt_voltage);
 
     imu_union imu_readings = imu();
     thermo_union thermo_readings = thermo();
     atm_union atm_master = dispAtmData();
     gravity_so2_union gravity_so2_readings = gravity_so2();
-    // ecsense_so2_union ecsense_so2_readings = ecsense_so2_reading();
     ecsense_so2_union ecsense_so2_readings = ecsense_so2_reading_full();
+    // ecsense_so2_union ecsense_so2_readings = ecsense_so2_reading();
     
-    Serial.println("\nREADINGS DONE! WAITING FOR SLAVE");
     #ifdef SLAVE
+      Serial.println("\nMASTER READINGS DONE! WAITING FOR SLAVE...");
       cli();  // stop interrupts
       trigger_cmd[1]++; // counter to track trigger number
       Serial.println("");Serial.printf("SPI Master Command Sent: 0x%x (%d)", trigger_cmd[0], trigger_cmd[0]);Serial.println("");
       spi_rxtx(trigger_cmd, &rx_union, &tx_union); // Send command to trigger readings (Command == 0xAA)
-      delay(SLAVE_READINGS_DELAY_MS); // delay 2000ms to wait for slave to take readings
-
+      // delay(SLAVE_READINGS_DELAY_MS); // delay 2000ms to wait for slave to take readings
       // request_cmd[1] = trigger_cmd[1];
       // Serial.printf("SPI Master Command Sent: 0x%x (%d)", request_cmd[0], request_cmd[0]);Serial.println("");
       // spi_rxtx(request_cmd, &rx_union, &tx_union); // Send command to request readings (Command == 0xBB)
 
+      int slave_reading_num = rx_union.readings.number;
       atm_union atm_slave = rx_union.readings.atm;
       gps_union gps_slave = rx_union.readings.gps;
       int co2_slave = rx_union.readings.co2;
-      // float s_batt_voltage = rx_union.readings.battery_voltage;
-      // float s_batt_percent = rx_union.readings.battery_percent;
-    
+
+      Serial.print("Slave Reading Number:"); 
+      Serial.println(slave_reading_num);
       Serial.println("Slave Battery Readings:"); 
       Serial.printf("ADC: %d", s_batt_adc);Serial.println("");
       Serial.printf("Voltage: %f", s_batt_voltage);Serial.println("");
@@ -151,6 +154,7 @@ void loop(void)
     Serial.println("");
     lora_union tx;
     tx.data_struct.start_byte = STARTBYTE;
+    tx.data_struct.master_reading_num = trigger_cmd[1];
     #ifdef RTC
       tx.data_struct.datetime = datetime;
     #endif
@@ -160,6 +164,7 @@ void loop(void)
     tx.data_struct.thermocouple = thermo_readings;
     tx.data_struct.ecsense_so2 = ecsense_so2_readings;
     #ifdef SLAVE
+      tx.data_struct.slave_reading_num = slave_reading_num;
       tx.data_struct.atm_slave = atm_slave;
       tx.data_struct.gps_slave = gps_slave;
       tx.data_struct.co2 = co2_slave;

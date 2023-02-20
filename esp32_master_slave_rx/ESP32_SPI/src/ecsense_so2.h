@@ -31,8 +31,8 @@ ecsense_so2_union ecsense_so2_reading() {
   int available = SerialPort.available();
   if (available >= 9) {
     Serial.println("");
-    Serial.print("ECSENSE SO2:");
-    Serial.println(available);
+    Serial.print("ECSENSE SO2:"); Serial.print(available); Serial.println(" bytes");
+
     bool start_capture = false;
     uint8_t prev_val = 0;
     for(int n=0; n<available; n++) {
@@ -40,17 +40,14 @@ ecsense_so2_union ecsense_so2_reading() {
         if (n>0 && val == 0x86 && prev_val == 0xFF) {
           start_capture = true;
           start_index = n-1;
-          Serial.println("****");
+          Serial.println("**** VALID READING FOUND ****");
         }
         if (start_capture == true) {
           output[n] = val;
           Serial.print("*");
         }
         Serial.print(n);Serial.print(": ");Serial.print(val, HEX); Serial.println("");
-        if (n == (start_index + 9)){ 
-          start_capture = false;
-          // break; 
-        }
+        if (n == (start_index + 9)){  start_capture = false; }
         prev_val = val;
     }
 
@@ -72,42 +69,51 @@ ecsense_so2_union ecsense_so2_reading_full() {
   const unsigned char commandSix[9] = {0XFF, 00, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
   SerialPort.write(commandSix, 9);
 
-  int start_index = 0;
-  float gasValue = -1;
-  float temp = -1;
-  float humidity = -1;
+  int start_index = -1;
+  float gasValue  = -1;
+  float temp      = -1;
+  float humidity  = -1;
   uint8_t output[13] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-  if (SerialPort.available() >= 13) {
+  uint32_t available = (uint32_t) SerialPort.available();
+  if (available >= 13) {
     Serial.println("");
-    Serial.println("ECSENSE SO2:");
-    // for(int n=0; n<26; n++) {
+    Serial.print("ECSENSE SO2:"); Serial.print(available); Serial.println(" bytes");
+
+    bool start_capture = false;
+    uint8_t prev_val = 0;
+    for(int n=0; n<available; n++) {
+      uint8_t val = SerialPort.read();
+      if ( n>0 && val == 0x87 && prev_val == 0xFF ) {
+        start_capture = true;
+        start_index = n-1;
+        Serial.println("**** VALID READING FOUND ****");
+      }
+      if (start_capture == true) {
+        output[n] = val;
+        Serial.print("*");
+      }
+      Serial.print(n);Serial.print(": ");Serial.print(val, HEX); Serial.println("");
+      if (n == (start_index + 13)){ start_capture = false; }
+      prev_val = val;
+    }
+    // for(int n=0; n<13; n++) {
     //     output[n] = SerialPort.read();
     //     Serial.print(output[n], HEX);
     //     Serial.print(" ");
-    //     if (output[n] == 0x86 && output[n-1] == 0xFF) {
-    //       start_index = n-1;
-    //     }
-    //     if (n == (start_index + 8)){
-    //       break;
-    //     }
     // }
-    for(int n=0; n<13; n++) {
-        output[n] = SerialPort.read();
-        Serial.print(output[n], HEX);
-        Serial.print(" ");
-    }
     Serial.println("");
-    gasValue = (float)((output[start_index+6] * 256 + output[start_index+7])) / 100;
-    temp = (float)((output[start_index+8] << 8 ) | (output[start_index+9])) / 100;
-    humidity = (float)((output[start_index+10] << 8 ) | (output[start_index+11])) / 100;
+    gasValue =  (float)((output[start_index+6] * 256 + output[start_index+7])) / 100;
+    temp =      (float)((output[start_index+8] << 8 ) | (output[start_index+9])) / 100;
+    humidity =  (float)((output[start_index+10] << 8 ) | (output[start_index+11])) / 100;
     Serial.print(gasValue);Serial.println(" ppm");
     Serial.print(temp);Serial.println(" deg C");
     Serial.print(humidity);Serial.println(" rh%");
   } 
 
   ecsense_so2_union so2_readings;
-  for(int n=0; n<13; n++) { so2_readings.readings.full_reading[n] = output[n]; }
+  so2_readings.readings.byte_count = available;
+  for(int n=0; n<16; n++) { so2_readings.readings.full_reading[n] = output[n]; }
   so2_readings.readings.ecsense_so2 = gasValue;
   so2_readings.readings.ecsense_temp = temp;
   so2_readings.readings.ecsense_hum = humidity;

@@ -15,7 +15,7 @@ byte request_cmd[BUF_LEN];
 
 void print_rxtx(data_union rx, data_union tx) {
   // Master does TX then RX
-  Serial.println("\nSETTING UP SPI BUFFER: ");
+  Serial.println("\nMASTER/SLAVE SPI BUFFER: ");
   Serial.println("TX BUFFER: ");
   for(int i=0;i<BUF_LEN;i++){
     Serial.print(tx.buf[i], HEX);

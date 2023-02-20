@@ -116,10 +116,10 @@ const DataTable = () => {
                               unit1 = '%'/>
 
                               <Reading 
-                              parentFunction = {handleShow("LoRa RSSI", "RSSI", "rssi")}
+                              parentFunction = {handleShow("LoRa RSSI", "RSSI", "rx_rssi")}
                               device = 'LoRa RSSI'
-                              reading1= {data.rssi?.toFixed(2)}
-                              unit1 = '°C'/>
+                              reading1= {data.rx_rssi?.toFixed(2)}
+                              unit1 = ''/>
                             </div>
                           </div>
                         </div>

@@ -1,14 +1,15 @@
 #include <ESP32SPISlave.h>
 #include <gps_atm.h>
 
-#define BUF_LEN 64
+#define BUF_LEN   64
 #define VSPI_MISO 19
 #define VSPI_MOSI 23
 #define VSPI_SCLK 18
-#define VSPI_CS  14     
+#define VSPI_CS   14     
 
 union data_union {
     struct readings {
+      uint32_t number;
       atm_union atm;
       gps_union gps;
       int co2;

@@ -49,17 +49,19 @@
 
     union ecsense_so2_union {
         struct readings {
-            uint8_t full_reading[13];
+            uint32_t byte_count;
+            uint8_t full_reading[16];
             float ecsense_so2;
             float ecsense_temp;
             float ecsense_hum;
         } readings;
-        uint8_t buf[25];
+        uint8_t buf[32];
     };
 
     union lora_union {
         struct data_struct {
             uint8_t start_byte;
+            int master_reading_num;
             datetime_union datetime;
             gravity_so2_union gravity_so2;
             atm_union atm_master;
@@ -68,6 +70,7 @@
             imu_union imu;
             thermo_union thermocouple;
             ecsense_so2_union ecsense_so2;
+            uint32_t slave_reading_num;
             int co2;
             int m_battery_adc;
             float m_battery_voltage;
@@ -83,6 +86,8 @@
 
 
     void print_lora_union(lora_union rx) {
+        Serial.println("master reading number:");
+        Serial.print("   count: "); Serial.println(rx.data_struct.master_reading_num);
         Serial.println("datetime:");
         Serial.print("   "); Serial.print(rx.data_struct.datetime.datetime.year);
         Serial.print("-"); Serial.print(rx.data_struct.datetime.datetime.b[0]);
@@ -94,12 +99,14 @@
         Serial.print("   GravitySO2: "); Serial.println(rx.data_struct.gravity_so2.fl[0]);
         Serial.print("   GravityTemp: "); Serial.println(rx.data_struct.gravity_so2.fl[1]);
         Serial.println("ecsense so2:");
+        Serial.print("   Bytes: "); Serial.println(rx.data_struct.ecsense_so2.readings.byte_count);
         Serial.print("   ECSenseSO2: "); 
         for (int n=0; n<9; n++) {
             Serial.print(rx.data_struct.ecsense_so2.readings.full_reading[n], HEX); Serial.print(" "); 
-        }
-        Serial.println("");
+        } Serial.println("");
         Serial.print("   ECSenseSO2: "); Serial.println(rx.data_struct.ecsense_so2.readings.ecsense_so2);
+        Serial.print("   Temp: "); Serial.println(rx.data_struct.ecsense_so2.readings.ecsense_temp);
+        Serial.print("   Hum: "); Serial.println(rx.data_struct.ecsense_so2.readings.ecsense_hum);
         Serial.println("co2:");
         Serial.print("   CO2: "); Serial.println(rx.data_struct.co2);
         Serial.println("atm master:");
@@ -134,12 +141,13 @@
         Serial.print("   M_A: "); Serial.println(rx.data_struct.m_battery_adc);
         Serial.print("   M_V: "); Serial.println(rx.data_struct.m_battery_voltage);
         Serial.print("   M_%: "); Serial.println(rx.data_struct.m_battry_percent);
-
         Serial.print("   S_A: "); Serial.println(rx.data_struct.s_battery_adc);
         Serial.print("   S_V: "); Serial.println(rx.data_struct.s_battery_voltage);
         Serial.print("   S_%: "); Serial.println(rx.data_struct.s_battry_percent);
         Serial.println("rssi:");
         Serial.print("   TX: "); Serial.println(rx.data_struct.tx_rssi);
         Serial.print("   RX: "); Serial.println(rx.data_struct.rx_rssi);
+        Serial.println("slave reading number:");
+        Serial.print("   count: "); Serial.println(rx.data_struct.slave_reading_num);
     }
 #endif

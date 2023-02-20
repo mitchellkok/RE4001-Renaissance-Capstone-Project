@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 eventlet.monkey_patch()
 
-TESTING = True # Toggle for test mode
+TESTING = False # Toggle for test mode
 test_keys = ['date_time', 
             'm_t',      # Master 3 in 1 Temperature
             'm_p',      # Master 3 in 1 Pressure 
