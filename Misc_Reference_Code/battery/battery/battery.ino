@@ -30,13 +30,15 @@ float get_battery_percent() {
     lcd.setCursor(2,0);   //Set cursor to character 2 on line 0
     lcd.print(battv);
     lcd.print("V");
-    lcd.setCursor(2,1);   //Set cursor to character 2 on line 0
+    lcd.setCursor(2,1);   //Set cursor to character 2 on line 1
     lcd.print(battpc);
     lcd.print("%");
     return battpc;
 }
 
 void setup() {
+  Serial.begin(9600);
+  Serial.println("Starting");
   // put your setup code here, to run once:
   pinMode(LED, OUTPUT); // Declare the LED as an output
   digitalWrite(LED, HIGH); // Turn the LED on
@@ -48,6 +50,50 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  get_battery_percent();
-  delay(2000);
+  // get_battery_percent();
+  // delay(2000);
+  scan();
+}
+
+
+void scan()
+{
+  byte error, address;
+  int nDevices;
+
+  Serial.println("Scanning...");
+
+  nDevices = 0;
+  for(address = 1; address < 127; address++ )
+  {
+    // The i2c_scanner uses the return value of
+    // the Write.endTransmisstion to see if
+    // a device did acknowledge to the address.
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+
+    if (error == 0)
+    {
+      Serial.print("I2C device found at address 0x");
+      if (address<16)
+        Serial.print("0");
+      Serial.print(address,HEX);
+      Serial.println("  !");
+
+      nDevices++;
+    }
+    else if (error==4)
+    {
+      Serial.print("Unknown error at address 0x");
+      if (address<16)
+        Serial.print("0");
+      Serial.println(address,HEX);
+    }    
+  }
+  if (nDevices == 0)
+    Serial.println("No I2C devices found\n");
+  else
+    Serial.println("done\n");
+
+  delay(5000);           // wait 5 seconds for next scan
 }

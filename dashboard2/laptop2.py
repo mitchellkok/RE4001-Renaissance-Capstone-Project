@@ -8,10 +8,13 @@ import sseclient
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
+from datetime import datetime
 
 eventlet.monkey_patch()
 
-TESTING = False # Toggle for test mode
+TESTING = True # Toggle for test mode
+CSV_MODE = False
+
 test_keys = ['date_time', 
             'm_t',      # Master 3 in 1 Temperature
             'm_p',      # Master 3 in 1 Pressure 
@@ -72,17 +75,24 @@ def testing():
     global df
     datetime = 0
     print("TESTING MODE...")
-    output_data = parse_data()
-    while True:
-        datetime +=1
-        for i in output_data.keys():
-            output_data[i] = datetime*(datetime%2)
-        output_data['date_time'] = datetime
-        print("DATA: ", datetime, output_data)
-        socketio.emit('data', output_data) # send the data back to the client
-        df = pd.concat([df, pd.DataFrame.from_records([output_data])])
-        # df.to_csv(csv_file)
-        eventlet.sleep(5)
+    if CSV_MODE:
+        test_df = pd.read_csv('dashboard_data_noheatpack.csv')  
+        for row_dict in test_df.to_dict(orient="records"):
+            print(row_dict)
+            socketio.emit('data', row_dict) # send the data back to the client
+            eventlet.sleep(1)
+    else:
+        output_data = parse_data()
+        while True:
+            datetime +=1
+            for i in output_data.keys():
+                output_data[i] = datetime*(datetime%2)
+            output_data['date_time'] = datetime
+            print("DATA: ", datetime, output_data)
+            socketio.emit('data', output_data) # send the data back to the client
+            df = pd.concat([df, pd.DataFrame.from_records([output_data])])
+            # df.to_csv(csv_file)
+            eventlet.sleep(5)
     
 def begin_poll():
     global df
@@ -134,6 +144,8 @@ def parse_data(input_data={}):
         output_data.pop("date_hour", None)
         output_data.pop("date_min", None)
         output_data.pop("date_sec", None)
+        timenow = datetime.now()
+        output_data["laptop_time_format"] = timenow.strftime("%H:%M:%S")
     except Exception as e:
         for i in test_keys:
             output_data[i] = "--"
@@ -151,5 +163,21 @@ def init_brew_controller():
     if not TESTING: socketio.start_background_task(begin_poll)
     else: socketio.start_background_task(testing)
 
+def start_react():
+    print("Starting React...")
+    file_path = os.path.realpath(__file__) # .replace("\\","/")
+    file_path = os.path.dirname(file_path)
+    file_path = os.path.join(file_path, "frontend")
+    print(file_path)
+    
+    os.chdir(file_path)
+    os.system("npm start") 
+
 if __name__ == "__main__":
+    socketio.start_background_task(start_react)
+    print("Starting SocketIO...")
     socketio.run(app, debug=True, port=8090)
+    eventlet.sleep(2)
+    
+
+    

@@ -11,7 +11,7 @@
 #include <batt.h>
 
 // Compiler options
-#define SDCARD  1
+// #define SDCARD  1
 #define RTC     1
 #define LORA    1
 #define SLAVE   1
@@ -82,7 +82,7 @@ void loop(void)
     last_millis = curr_millis;
     Serial.println("\n-----------------");
     Serial.println("READINGS STARTING");
-    Serial.print("Slave Reading Number:"); Serial.print(trigger_cmd[1]);Serial.println("\n");
+    Serial.print("Master Reading Number: "); Serial.print(trigger_cmd[1]);Serial.println("\n");
 
     #ifdef RTC
       datetime_union datetime = get_datetime();
@@ -118,7 +118,7 @@ void loop(void)
       gps_union gps_slave = rx_union.readings.gps;
       int co2_slave = rx_union.readings.co2;
 
-      Serial.print("Slave Reading Number:"); 
+      Serial.print("Slave Reading Number: "); 
       Serial.println(slave_reading_num);
       Serial.println("Slave Battery Readings:"); 
       Serial.printf("ADC: %d", s_batt_adc);Serial.println("");
@@ -186,8 +186,9 @@ void loop(void)
 
     Serial.println("");
     #ifdef SDCARD
-      pre_spi();
       delay(20);
+      pre_spi();
+      delay(100);
       sd_mount();
       delay(20);
       sd_save_data(&tx);
